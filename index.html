@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Remedia — Stock, Bills &amp; Books</title>
+<meta name="description" content="Offline stock, invoicing and ledger for homoeopathic and pharmacy businesses.">
+<meta name="theme-color" content="#2C4A3B">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Remedia">
+<style>
+:root{--bg:#F6F7F9;--ink:#1F2937;--soft:#6B7280;--ln:#E5E7EB;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.bg i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:fl 14s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:280px;height:280px;background:#bfd8c8;top:-60px;left:-80px}
+.bg i:nth-child(2){width:300px;height:300px;background:#cfd0f5;bottom:-80px;right:-90px;animation-delay:-5s}
+.bg i:nth-child(3){width:200px;height:200px;background:#f1dcbc;top:42%;left:55%;animation-delay:-9s}
+@keyframes fl{to{transform:translate(40px,-30px) scale(1.15)}}
+#hub{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:30px 18px 40px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#2C4A3B,#4E6049);display:grid;place-items:center;box-shadow:0 6px 16px rgba(44,74,59,.28)}
+.mark svg{width:26px;height:26px}
+h1{font:600 32px Georgia,serif;margin:0;letter-spacing:.01em}
+.eye{font-size:11px;letter-spacing:.16em;color:#2C4A3B;font-weight:700;margin:2px 0 0}
+.head{font-size:15px;color:var(--soft);margin:16px 0 22px;line-height:1.5;position:relative;padding-bottom:14px}
+.head::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:54px;border-radius:3px;background:linear-gradient(90deg,#2C4A3B,#6E8368,#B9803F);background-size:200% 100%;animation:sh 3.5s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.wd{display:flex;align-items:center;gap:14px;width:100%;min-height:118px;background:#fff;border:1px solid var(--ln);border-left:5px solid var(--c);border-radius:20px;padding:16px;margin:0 0 14px;color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(17,24,39,.06);transition:transform .2s,box-shadow .2s}
+.wd:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(17,24,39,.12)}.wd:active{transform:scale(.97)}
+.wd img,.wd svg.ic{width:62px;height:62px;border-radius:16px;flex:none}
+.wd div{flex:1;min-width:0}.wd small{display:block;letter-spacing:.14em;font-size:11px;font-weight:700;color:var(--c)}
+.wd b{display:block;font:600 22px Georgia,serif;margin:2px 0}.wd span{display:block;font-size:13px;color:var(--soft)}
+.wd i{font-style:normal;font-size:24px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);transition:transform .25s}.wd:hover i{transform:translateX(4px)}
+.foot{color:var(--soft);font-size:12px;text-align:center;margin-top:18px}
+#hub:not(.anim) .wd,#hub:not(.anim) .brand,#hub:not(.anim) .head,#hub:not(.anim) .foot{opacity:0}
+.anim .brand,.anim .head,.anim .wd,.anim .foot{animation:rise .65s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+#splash{position:fixed;inset:0;z-index:60;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .55s,visibility .55s}#splash.off{opacity:0;visibility:hidden}
+#splash .mark{width:84px;height:84px;border-radius:26px;animation:pop .8s cubic-bezier(.3,1.5,.5,1) both;position:relative}
+#splash .mark::after{content:"";position:absolute;inset:0;border-radius:26px;border:2px solid #6E8368;animation:ring 1.4s .4s ease-out infinite}
+#splash .mark svg{width:46px;height:46px}
+#splash h1{font-size:36px;animation:nm .9s .3s both}#splash p{margin:0;color:var(--soft);font-size:13px;letter-spacing:.14em;animation:nm .9s .55s both}
+@keyframes pop{from{transform:scale(.3) rotate(-25deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes ring{from{transform:scale(1);opacity:.7}to{transform:scale(1.6);opacity:0}}
+@keyframes nm{from{opacity:0;letter-spacing:.3em}to{opacity:1}}
+#veil{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;color:#fff;font:600 30px Georgia,serif;clip-path:circle(0 at var(--x,50%) var(--y,50%));pointer-events:none}
+#veil[hidden]{display:none}#veil.go{clip-path:circle(150% at var(--x) var(--y));transition:clip-path .55s cubic-bezier(.65,0,.35,1)}
+#veil.fade{opacity:0;transition:opacity .4s}
+#veil span{opacity:0;transform:translateY(10px);animation:vs .4s .25s forwards}@keyframes vs{to{opacity:1;transform:none}}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:#fff;z-index:10}#app[hidden],#hub[hidden]{display:none}
+#app.in{animation:ain .5s cubic-bezier(.2,.8,.2,1)}#app.out{animation:aout .26s ease-in forwards}
+@keyframes ain{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes aout{to{opacity:0;transform:translateY(18px) scale(.98)}}
+#bar{display:flex;align-items:center;gap:10px;padding:calc(6px + env(safe-area-inset-top,0px)) 12px 6px;color:#fff;flex:none;transition:background .3s}
+#bar button{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:99px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}#bar button:active{transform:scale(.94)}
+#bar b{font-size:15px;font-weight:600}
+#fr{flex:1;min-height:0;position:relative}#fr iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}#fr iframe[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style></head><body>
+<div class="bg"><i></i><i></i><i></i></div>
+<div id="splash"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 5 11 5 15a7 7 0 0 0 14 0C19 11 12 3 12 3z" fill="#fff"/><path d="M9.2 15.2l2 2 3.6-3.8" stroke="#2C4A3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h1>Remedia</h1><p>STOCK · BILLS · BOOKS</p></div>
+<div id="hub">
+<div class="brand" style="--d:.05s"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 5 11 5 15a7 7 0 0 0 14 0C19 11 12 3 12 3z" fill="#fff"/><path d="M9.2 15.2l2 2 3.6-3.8" stroke="#2C4A3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>Remedia</h1><p class="eye">STOCK · BILLS · BOOKS</p></div></div>
+<p class="head" style="--d:.15s">Everything your dispensary runs on, kept in perfect balance.</p>
+<button class="wd" style="--c:#2C4A3B;--d:.25s" onclick="openApp('stock',event)"><img alt="" src="stock.png"><div><small>STOCK</small><b>Materia Depot</b><span id="s1">Tap to open</span></div><i>›</i></button>
+<button class="wd" style="--c:#4E6049;--d:.38s" onclick="openApp('inv',event)"><svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#E8EEE6"/><path d="M19 12h26v40l-5-3-4 3-4-3-4 3-4-3-5 3z" fill="#fff" stroke="#4E6049" stroke-width="3" stroke-linejoin="round"/><path d="M25 22h14M25 30h14M25 38h8" stroke="#B9803F" stroke-width="3" stroke-linecap="round"/></svg><div><small>INVOICE</small><b>GentleBill</b><span id="s2">Tap to open</span></div><i>›</i></button>
+<button class="wd" style="--c:#4f46b8;--d:.51s" onclick="openApp('led',event)"><img alt="" src="ledger.png"><div><small>LEDGER</small><b>Ledger</b><span id="s3">Tap to open</span></div><i>›</i></button>
+<p class="foot" style="--d:.65s">Invoices post to the Ledger automatically · all data stays on this device.</p>
+</div>
+<div id="veil" hidden></div>
+<div id="app" hidden><div id="bar"><button onclick="goHub()">‹ Remedia</button><b id="bt"></b></div><div id="fr"></div></div>
+<script>
+const SRC={stock:'stock.html',inv:'invoice.html',led:'ledger.html'};
+const META={stock:['Materia Depot','#2C4A3B'],inv:['GentleBill','#4E6049'],led:['Ledger','#4f46b8']};
+const $=s=>document.querySelector(s),FR={},RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const dec=b=>new TextDecoder().decode(Uint8Array.from(atob(b),c=>c.charCodeAt(0)));
+const M=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const rd=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+function stats(){
+ try{const g=rd('depot_generic_v1')||[],c=rd('depot_companies_v1')||[],all=[...g,...c.flatMap(x=>x.medicines||[])];
+  const t=m=>{let n=0;(m.dilutions||[]).forEach(b=>Object.values(b.potencies||{}).forEach(v=>n+=+v||0));Object.values(m.motherTincture||{}).forEach(v=>n+=+v||0);return n};
+  const u=all.reduce((a,m)=>a+t(m),0),k=all.filter(m=>t(m)>0).length;
+  $('#s1').textContent=all.length?u+' units · '+k+' medicines in stock':'Tap to open'}catch(e){}
+ try{const d=rd('gentlebill_data_v1'),v=Object.values((d&&d.invoices)||{});
+  $('#s2').textContent=v.length?v.length+' invoices · '+M(v.reduce((a,i)=>a+((i.calc&&i.calc.grand)||0),0))+' billed':'Tap to open'}catch(e){}
+ try{const d=rd('ledger2');if(d&&d.parties&&d.parties.length){const r=d.parties.reduce((a,p)=>{const b=(+p.open||0)+(d.ent||[]).filter(e=>e.pid==p.id).reduce((s,e)=>s+(e.type=='dr'?e.amt:-e.amt),0);return a+Math.max(0,b)},0);
+  $('#s3').textContent=M(r)+' to receive · '+d.parties.length+' parties'}}catch(e){}}
+const replay=()=>{const h=$('#hub');h.classList.remove('anim');void h.offsetWidth;h.classList.add('anim')};
+let busy=false;
+function openApp(k,ev){
+ if(busy)return;busy=true;
+ const r=ev?ev.currentTarget.getBoundingClientRect():{left:innerWidth/2-1,top:innerHeight/2-1,width:2,height:2},v=$('#veil');
+ v.style.setProperty('--x',(r.left+r.width/2)+'px');v.style.setProperty('--y',(r.top+r.height/2)+'px');
+ v.style.background=META[k][1];v.innerHTML='<span>'+META[k][0]+'</span>';v.className='';v.hidden=false;void v.offsetWidth;v.className='go';
+ setTimeout(()=>{
+  if(k=='led'&&FR[k]){FR[k].remove();delete FR[k]}
+  if(!FR[k]){const f=document.createElement('iframe');f.title=META[k][0];f.src=SRC[k];$('#fr').appendChild(f);FR[k]=f}
+  for(const n in FR)FR[n].hidden=n!=k;
+  $('#bar').style.background=META[k][1];$('#bt').textContent=META[k][0];
+  $('#hub').hidden=true;$('#app').hidden=false;$('#app').className='in';
+  v.className='go fade';setTimeout(()=>{v.hidden=true;busy=false},RM?0:420)},RM?0:560)}
+function goHub(){if(busy)return;busy=true;$('#app').className='out';
+ setTimeout(()=>{$('#app').hidden=true;$('#hub').hidden=false;stats();replay();busy=false},RM?0:260)}
+stats();
+setTimeout(()=>{$('#splash').classList.add('off');replay()},RM?0:1500);
+const QA=new URLSearchParams(location.search).get('app');if(QA&&META[QA])setTimeout(()=>openApp(QA,null),RM?200:1700);
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script></body></html>

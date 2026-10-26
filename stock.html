@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2C4A3B">
+<title>Materia Depot</title>
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF9F4; --paper-raised:#FFFFFF;
+    --botanical:#2C4A3B; --botanical-deep:#1F362B;
+    --sage:#A8C3A0; --sage-soft:#E4EBE0;
+    --amber:#C08A3E; --ink:#1F2A24; --ink-soft:#5B6B61;
+    --line:#DEE3D8; --danger:#B4553F;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; min-height:100vh; padding-bottom:32px;}
+  .display{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  #app{max-width:560px;margin:0 auto;position:relative;min-height:100vh;}
+
+  header.top{padding:26px 20px 16px; position:sticky; top:0; z-index:10; background:var(--paper); border-bottom:1px solid var(--line);}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .brand-mark{width:38px;height:38px;flex-shrink:0;}
+  .brand-name{font-family:'Fraunces',serif; font-size:19px; font-weight:600; letter-spacing:0.2px;}
+  .brand-sub{font-size:10px; color:var(--ink-soft); letter-spacing:0.09em; text-transform:uppercase; margin-top:1px;}
+  .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line); background:var(--paper-raised); display:flex;align-items:center;justify-content:center; cursor:pointer; color:var(--botanical); flex-shrink:0;}
+  .search-wrap{position:relative;}
+  .search-wrap input{width:100%; padding:13px 42px 13px 42px; border-radius:12px; border:1px solid var(--line); background:var(--paper-raised); font-family:'Inter',sans-serif; font-size:15px; color:var(--ink); outline:none;}
+  .search-wrap input:focus{border-color:var(--botanical);}
+  .search-wrap .s-icon{position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:0.5; pointer-events:none;}
+  .search-wrap .clear-icon{position:absolute; right:12px; top:50%; transform:translateY(-50%); opacity:0.6; cursor:pointer; width:22px; height:22px; display:flex; align-items:center; justify-content:center;}
+
+  main{padding:20px;}
+
+  .ledger{background:var(--botanical); color:var(--paper); border-radius:18px; padding:22px 20px; margin-bottom:18px; position:relative; overflow:hidden;}
+  .ledger::after{content:""; position:absolute; right:-30px; top:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.05);}
+  .ledger-title{font-size:11px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; margin-bottom:14px;}
+  .ledger-total{display:flex; align-items:baseline; gap:8px; margin-bottom:18px;}
+  .ledger-total .num{font-family:'Fraunces',serif; font-size:40px; font-weight:600; line-height:1;}
+  .ledger-total .label{font-size:12.5px; opacity:0.8;}
+  .ledger-split{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .ledger-split-cell{background:rgba(255,255,255,0.08); border-radius:12px; padding:12px 14px;}
+  .ledger-split-cell .v{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:20px;}
+  .ledger-split-cell .l{font-size:10.5px; opacity:0.75; margin-top:2px; letter-spacing:0.03em; text-transform:uppercase;}
+  .ledger-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  .ledger-cell{background:rgba(255,255,255,0.08); border-radius:10px; padding:10px 8px; text-align:center;}
+  .ledger-cell .val{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:16px;}
+  .ledger-cell .tag{font-size:9.5px; opacity:0.75; margin-top:3px; letter-spacing:0.04em;}
+
+  .nav-card{display:flex; align-items:center; gap:14px; background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:12px; cursor:pointer;}
+  .nav-card:active{background:var(--sage-soft);}
+  .nav-card-icon{width:48px;height:48px;border-radius:14px;background:var(--sage-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--botanical-deep);}
+  .nav-card-title{font-family:'Fraunces',serif; font-size:17px; font-weight:600;}
+  .nav-card-meta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .nav-card-arrow{margin-left:auto; color:var(--ink-soft); flex-shrink:0;}
+
+  .section-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+  .section-title{font-family:'Fraunces',serif; font-size:17px; font-weight:600;}
+  .count-chip{font-size:11.5px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;}
+  .link-btn{font-size:12.5px; color:var(--botanical); font-weight:600; cursor:pointer; border-bottom:1px solid var(--sage);}
+
+  .med-card{background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:15px 16px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;}
+  .med-card:active{background:var(--sage-soft);}
+  .med-name{font-family:'Fraunces',serif; font-size:16px; font-weight:600;}
+  .med-meta{font-size:11.5px; color:var(--ink-soft); margin-top:3px;}
+  .med-badge{width:40px; height:40px; border-radius:50%; background:var(--sage-soft); color:var(--botanical-deep); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px; flex-shrink:0; margin-left:12px;}
+  .med-badge.zero{background:var(--paper); color:var(--ink-soft); border:1px dashed var(--line);}
+  .empty{text-align:center; padding:50px 20px; color:var(--ink-soft);}
+  .empty .display{font-size:18px; color:var(--ink); margin-bottom:6px;}
+  .hint{text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:13.5px;}
+
+  .company-card{display:flex; align-items:center; gap:13px; background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:10px;}
+  .company-avatar{width:44px;height:44px;border-radius:12px;background:var(--sage-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;color:var(--botanical-deep);font-family:'Fraunces',serif;font-weight:600;font-size:16px;}
+  .company-avatar img{width:100%;height:100%;object-fit:cover;}
+  .company-info{flex:1; min-width:0; cursor:pointer;}
+  .company-name{font-family:'Fraunces',serif; font-size:15.5px; font-weight:600;}
+  .company-meta{font-size:11.5px; color:var(--ink-soft); margin-top:2px;}
+  .company-actions{display:flex; gap:6px; flex-shrink:0;}
+  .mini-icon-btn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);}
+  .mini-icon-btn:active{background:var(--sage-soft);}
+  .mini-icon-btn.danger{color:var(--danger);}
+
+  .fab{position:fixed; bottom:24px; right:calc(50% - 280px + 24px); width:56px; height:56px; border-radius:50%; background:var(--amber); color:#fff; border:none; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(192,138,62,0.4); cursor:pointer; z-index:20;}
+  @media (max-width:608px){ .fab{right:24px;} }
+
+  .back-row{display:flex; align-items:center; gap:10px; justify-content:space-between;}
+  .back-left{display:flex; align-items:center; gap:10px; min-width:0;}
+  .pill-btn{padding:8px 16px; border-radius:20px; font-size:12.5px; font-weight:600; cursor:pointer; border:1px solid var(--line); background:var(--paper-raised); color:var(--botanical); white-space:nowrap; flex-shrink:0;}
+  .pill-btn.active{background:var(--botanical); color:var(--paper); border-color:var(--botanical);}
+  .detail-title{font-family:'Fraunces',serif; font-size:26px; font-weight:600; margin:18px 0 2px; overflow-wrap:anywhere;}
+  .detail-sub{font-size:12.5px; color:var(--ink-soft); margin-bottom:22px;}
+
+  .group{margin-bottom:22px;}
+  .group-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .group-label{font-size:12px; text-transform:uppercase; letter-spacing:0.09em; color:var(--amber); font-weight:600;}
+  .bottle-block{background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:10px;}
+  .bottle-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .bottle-size{font-family:'Fraunces',serif; font-weight:600; font-size:15px;}
+  .remove-bottle{color:var(--danger); font-size:12px; cursor:pointer;}
+  .potency-row{display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-top:1px solid var(--line); gap:8px;}
+  .potency-row:first-of-type{border-top:none;}
+  .potency-name{font-size:13.5px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
+  .potency-val{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:15px;}
+  .qty-control{display:flex; align-items:center; gap:8px;}
+  .qty-btn{width:28px; height:28px; border-radius:8px; border:1px solid var(--line); background:var(--paper); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; color:var(--botanical); user-select:none; flex-shrink:0;}
+  .qty-input{width:40px; text-align:center; border:none; background:transparent; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:15px; color:var(--ink);}
+  .row-remove-x{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--danger);cursor:pointer;flex-shrink:0;opacity:0.75;}
+  .add-line{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--botanical); font-weight:600; cursor:pointer; padding:10px 2px 2px;}
+
+  .primary-btn{width:100%; padding:14px; border-radius:12px; border:none; background:var(--botanical); color:var(--paper); font-family:'Inter',sans-serif; font-weight:600; font-size:14.5px; cursor:pointer; margin-top:6px;}
+  .ghost-btn{width:100%; padding:13px; border-radius:12px; border:1px solid var(--line); background:transparent; color:var(--danger); font-weight:600; font-size:13.5px; cursor:pointer; margin-top:10px;}
+  .text-input{width:100%; padding:13px 14px; border-radius:12px; border:1px solid var(--line); background:var(--paper-raised); font-family:'Inter',sans-serif; font-size:15px; color:var(--ink); outline:none; margin-bottom:12px;}
+  .text-input:focus{border-color:var(--botanical);}
+  .field-label{font-size:11.5px; text-transform:uppercase; letter-spacing:0.07em; color:var(--ink-soft); margin-bottom:6px; display:block;}
+
+  table{width:100%; border-collapse:collapse; font-size:12px;}
+  th{background:var(--botanical); color:var(--paper); font-weight:600; padding:9px 10px; text-align:left; position:sticky; top:0; font-size:10.5px; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;}
+  td{padding:9px 10px; border-bottom:1px solid var(--line); font-family:'IBM Plex Mono',monospace; white-space:nowrap;}
+  td.name-cell{font-family:'Fraunces',serif; font-weight:600; font-size:13px; white-space:normal; position:sticky; left:0; background:inherit;}
+  td.total-cell{font-weight:600; color:var(--botanical-deep); background:var(--sage-soft) !important;}
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px;}
+  tr:nth-child(even){background:#F6F4EE;}
+  tr:nth-child(odd){background:var(--paper-raised);}
+  .dash{opacity:0.35;}
+
+  .tabbar{display:flex; gap:8px; margin-bottom:16px;}
+  .tab-btn{flex:1; text-align:center; padding:10px; border-radius:12px; border:1px solid var(--line); background:var(--paper-raised); font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer;}
+  .tab-btn.active{background:var(--botanical); color:var(--paper); border-color:var(--botanical);}
+
+  .avatar-upload{display:flex; align-items:center; gap:14px; margin-bottom:20px;}
+  .avatar-circle{width:64px;height:64px;border-radius:50%;background:var(--sage-soft);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--botanical-deep);flex-shrink:0;cursor:pointer;border:1px dashed var(--line);}
+  .avatar-circle img{width:100%;height:100%;object-fit:cover;}
+  .avatar-hint{font-size:12px; color:var(--ink-soft);}
+  .avatar-hint .link-btn{display:block; margin-top:4px;}
+
+  .hidden{display:none !important;}
+  .modal-bg{position:fixed; inset:0; background:rgba(31,42,36,0.45); z-index:50; display:flex; align-items:flex-end; justify-content:center;}
+  .modal{background:var(--paper); width:100%; max-width:560px; border-radius:20px 20px 0 0; padding:22px 20px 28px; max-height:85vh; overflow-y:auto;}
+  .modal-title{font-family:'Fraunces',serif; font-size:19px; font-weight:600; margin-bottom:16px;}
+  .modal-sub{font-size:13px; color:var(--ink-soft); margin-bottom:14px; margin-top:-8px;}
+  .suggest-list{max-height:220px; overflow-y:auto; border:1px solid var(--line); border-radius:12px; margin:-6px 0 12px;}
+  .suggest-item{padding:11px 14px; font-size:14px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .suggest-item:last-child{border-bottom:none;}
+  .suggest-item:active{background:var(--sage-soft);}
+  .choice-row{display:flex; flex-direction:column; gap:10px;}
+  .choice-btn{width:100%; padding:16px; border-radius:12px; border:1px solid var(--line); background:var(--paper-raised); text-align:left; cursor:pointer;}
+  .choice-btn .display{font-size:15.5px; font-weight:600;}
+  .choice-btn .sub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+
+  .order-card{background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:15px 16px; margin-bottom:10px; cursor:pointer;}
+  .order-card:active{background:var(--sage-soft);}
+  .order-top-row{display:flex; align-items:center; justify-content:space-between;}
+  .order-customer{font-family:'Fraunces',serif; font-size:16px; font-weight:600;}
+  .order-meta{font-size:11.5px; color:var(--ink-soft); margin-top:3px;}
+  .status-badge{font-size:10px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; padding:4px 10px; border-radius:20px; flex-shrink:0;}
+  .status-badge.draft{background:#FBEAD8; color:var(--amber);}
+  .status-badge.fulfilled{background:var(--sage-soft); color:var(--botanical-deep);}
+
+  .order-item-row{display:flex; align-items:center; justify-content:space-between; background:var(--paper-raised); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:8px; gap:10px;}
+  .order-item-info{min-width:0;}
+  .order-item-name{font-family:'Fraunces',serif; font-weight:600; font-size:14.5px;}
+  .order-item-variant{font-size:11.5px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; margin-top:2px;}
+  .order-item-tag{font-size:10px; color:var(--amber); font-weight:600; text-transform:uppercase; letter-spacing:0.04em;}
+
+  .variant-pick-row{display:flex; align-items:center; justify-content:space-between; padding:11px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .variant-pick-row:last-child{border-bottom:none;}
+  .variant-pick-row:active{background:var(--sage-soft);}
+  .variant-pick-label{font-family:'IBM Plex Mono',monospace; font-size:13.5px;}
+  .variant-pick-stock{font-size:11px; color:var(--ink-soft);}
+  .med-pick-item{padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .med-pick-item:active{background:var(--sage-soft);}
+  .med-pick-name{font-family:'Fraunces',serif; font-weight:600; font-size:14px;}
+  .med-pick-tag{font-size:10.5px; color:var(--ink-soft);}
+  .fulfill-btn{background:var(--botanical); color:var(--paper);}
+  .problem-list{background:#FBEAD8; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#8A5A1E; margin-bottom:14px;}
+  .problem-list div{margin-bottom:4px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ================= Master reference list (names only, A–Z) — generic homoeopathic medicines only ================= */
+const MASTER_LIST = ["Abies Nigra","Abrotanum","Aconitum Napellus","Aesculus Hippocastanum","Agaricus Muscarius","Agnus Castus","Ailanthus Glandulosa","Allium Cepa","Aloe Socotrina","Alumina","Ambra Grisea","Ammonium Carbonicum","Ammonium Muriaticum","Anacardium Orientale","Antimonium Crudum","Antimonium Tartaricum","Apis Mellifica","Argentum Metallicum","Argentum Nitricum","Arnica Montana","Arsenicum Album","Arum Triphyllum","Asafoetida","Asarum Europaeum","Aurum Metallicum","Avena Sativa",
+"Baptisia Tinctoria","Baryta Carbonica","Baryta Muriatica","Belladonna","Bellis Perennis","Berberis Vulgaris","Bismuthum","Borax","Bovista","Bromium","Bryonia Alba",
+"Cactus Grandiflorus","Cadmium Sulphuricum","Calcarea Carbonica","Calcarea Fluorica","Calcarea Phosphorica","Calcarea Sulphurica","Calendula Officinalis","Camphora","Cannabis Indica","Cannabis Sativa","Cantharis","Capsicum Annuum","Carbo Animalis","Carbo Vegetabilis","Carboneum Sulphuratum","Carduus Marianus","Caulophyllum","Causticum","Chamomilla","Chelidonium Majus","China Officinalis","Chininum Sulphuricum","Cicuta Virosa","Cimicifuga Racemosa","Cina","Cinnabaris","Cocculus Indicus","Coffea Cruda","Colchicum Autumnale","Colocynthis","Conium Maculatum","Convallaria Majalis","Corallium Rubrum","Crocus Sativus","Crotalus Horridus","Croton Tiglium","Cuprum Metallicum","Cyclamen Europaeum",
+"Digitalis Purpurea","Drosera Rotundifolia","Dulcamara",
+"Echinacea Angustifolia","Elaps Corallinus","Equisetum Hyemale","Eupatorium Perfoliatum","Eupatorium Purpureum","Euphrasia Officinalis",
+"Ferrum Metallicum","Ferrum Phosphoricum","Fluoricum Acidum","Formica Rufa",
+"Gelsemium Sempervirens","Glonoinum","Graphites","Grindelia Robusta","Guaiacum",
+"Hamamelis Virginica","Hekla Lava","Helleborus Niger","Hepar Sulphuris Calcareum","Hydrastis Canadensis","Hydrocotyle Asiatica","Hyoscyamus Niger","Hypericum Perforatum",
+"Ignatia Amara","Iodium","Ipecacuanha","Iris Versicolor",
+"Jaborandi","Jatropha Curcas","Juglans Regia","Justicia Adhatoda",
+"Kali Bichromicum","Kali Bromatum","Kali Carbonicum","Kali Iodatum","Kali Muriaticum","Kali Nitricum","Kali Phosphoricum","Kali Sulphuricum","Kalmia Latifolia","Kreosotum",
+"Lac Caninum","Lac Defloratum","Lachesis Mutus","Lachnanthes Tinctoria","Lathyrus Sativus","Latrodectus Mactans","Ledum Palustre","Lilium Tigrinum","Lobelia Inflata","Lycopodium Clavatum","Lycopus Virginicus",
+"Magnesia Carbonica","Magnesia Muriatica","Magnesia Phosphorica","Manganum Aceticum","Medorrhinum","Melilotus Officinalis","Menyanthes Trifoliata","Mercurius Solubilis","Mezereum","Millefolium","Mimosa Pudica","Moschus","Murex Purpurea","Myrica Cerifera",
+"Naja Tripudians","Natrum Carbonicum","Natrum Muriaticum","Natrum Phosphoricum","Natrum Sulphuricum","Nitricum Acidum","Nux Moschata","Nux Vomica",
+"Oleander","Opium","Origanum Majorana",
+"Paeonia Officinalis","Pareira Brava","Petroleum","Phosphoricum Acidum","Phosphorus","Physostigma Venenosum","Phytolacca Decandra","Picric Acid","Plantago Major","Platina","Plumbum Metallicum","Podophyllum Peltatum","Psorinum","Pulsatilla Nigricans","Pyrogenium",
+"Ranunculus Bulbosus","Raphanus Sativus","Ratanhia","Rhododendron Chrysanthum","Rhus Toxicodendron","Rumex Crispus","Ruta Graveolens",
+"Sabadilla","Sabina","Sanguinaria Canadensis","Sarsaparilla Officinalis","Secale Cornutum","Selenium","Senecio Aureus","Sepia Officinalis","Silicea","Spigelia Anthelmia","Spongia Tosta","Squilla Maritima","Staphysagria","Stramonium","Strontium Carbonicum","Sulphur","Sulphuricum Acidum","Symphytum Officinale","Syzygium Jambolanum",
+"Tabacum","Tarantula Hispanica","Taraxacum Officinale","Terebinthina","Thiosinaminum","Thuja Occidentalis","Thyroidinum","Tuberculinum",
+"Urtica Urens","Uranium Nitricum",
+"Valeriana Officinalis","Veratrum Album","Veratrum Viride","Verbascum Thapsus","Vespa Crabro","Viburnum Opulus","Viola Odorata","Viola Tricolor","Vinca Minor","Vipera Berus",
+"Wyethia Helenoides","Xanthoxylum Fraxineum",
+"Zincum Metallicum","Zincum Phosphoricum","Zingiber Officinale"];
+
+/* ---------- Standard shelf grid (generic medicines only) ---------- */
+const STANDARD_SIZES = ['30ml','100ml','450ml'];
+const STANDARD_POTENCIES = ['30','200','1M'];
+const STANDARD_MT_SIZES = ['30ml','100ml','Pond'];
+function standardDilutions(){ return STANDARD_SIZES.map(size=>({ size, potencies: Object.fromEntries(STANDARD_POTENCIES.map(p=>[p,0])) })); }
+function standardMT(){ return Object.fromEntries(STANDARD_MT_SIZES.map(s=>[s,0])); }
+
+/* ---------- Storage keys ---------- */
+const OLD_STOCK_KEY = 'materia_stock_v1';
+const OLD_PROFILE_KEY = 'materia_profile_v1';
+const GENERIC_KEY = 'depot_generic_v1';
+const COMPANIES_KEY = 'depot_companies_v1';
+const ORDERS_KEY = 'depot_orders_v1';
+const PROFILE_KEY = 'depot_profile_v1';
+const SEED_FLAG = 'depot_master_loaded_v1';
+const MIGRATE_FLAG = 'depot_migrated_v1';
+
+function safeParse(key, fallback){ try{ const v = JSON.parse(localStorage.getItem(key)); return v==null ? fallback : v; }catch(e){ return fallback; } }
+function saveGeneric(){ localStorage.setItem(GENERIC_KEY, JSON.stringify(genericStock)); }
+function saveCompanies(){ localStorage.setItem(COMPANIES_KEY, JSON.stringify(companies)); }
+function saveOrders(){ localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); }
+function saveProfile(){ localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); }
+function cryptoId(){ return 'id_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+let genericStock = safeParse(GENERIC_KEY, []);
+let companies = safeParse(COMPANIES_KEY, []);
+let orders = safeParse(ORDERS_KEY, []);
+let profile = safeParse(PROFILE_KEY, {name:'', address:'', email:'', logo:''});
+let route = { page:'landing' };
+
+/* Migrate data from the earlier "Materia" version (same device) so nothing entered before is lost */
+if(localStorage.getItem(MIGRATE_FLAG) !== '1'){
+  const oldStock = safeParse(OLD_STOCK_KEY, null);
+  if(oldStock && oldStock.length && genericStock.length===0){ genericStock = oldStock; saveGeneric(); }
+  const oldProfile = safeParse(OLD_PROFILE_KEY, null);
+  if(oldProfile){ profile = { name: oldProfile.name||'', address: oldProfile.address||'', email: oldProfile.email||'', logo: oldProfile.logo||'' }; saveProfile(); }
+  localStorage.setItem(MIGRATE_FLAG, '1');
+}
+
+/* Seed the full A–Z reference list once, each pre-built with the standard grid */
+if(localStorage.getItem(SEED_FLAG) !== '1'){
+  const existingLower = new Set(genericStock.map(m=>m.name.trim().toLowerCase()));
+  MASTER_LIST.forEach(name=>{
+    if(!existingLower.has(name.toLowerCase())){
+      genericStock.push({ id: cryptoId(), name, dilutions: standardDilutions(), motherTincture: standardMT() });
+      existingLower.add(name.toLowerCase());
+    }
+  });
+  genericStock.sort((a,b)=> a.name.localeCompare(b.name));
+  saveGeneric();
+  localStorage.setItem(SEED_FLAG,'1');
+}
+
+/* Mother Tincture doesn't apply to patent/company medicines — clean up
+   anything accidentally added there before this was removed. */
+const MT_CLEANUP_FLAG = 'depot_patent_mt_cleanup_v1';
+if(localStorage.getItem(MT_CLEANUP_FLAG) !== '1'){
+  let changed = false;
+  companies.forEach(c=> c.medicines.forEach(m=>{
+    if(m.motherTincture && Object.keys(m.motherTincture).length){ m.motherTincture = {}; changed = true; }
+  }));
+  if(changed) saveCompanies();
+  localStorage.setItem(MT_CLEANUP_FLAG, '1');
+}
+
+/* ---------- Shared medicine math (works identically for generic or patent items) ---------- */
+function medTotal(med){
+  let t=0;
+  med.dilutions.forEach(b=> Object.values(b.potencies).forEach(v=> t+= Number(v)||0));
+  Object.values(med.motherTincture||{}).forEach(v=> t+= Number(v)||0);
+  return t;
+}
+function isStocked(med){ return medTotal(med) > 0; }
+function listTotal(list){ return list.reduce((s,m)=> s+medTotal(m), 0); }
+function listStockedCount(list){ return list.filter(isStocked).length; }
+function potencyBreakdown(list){
+  let totals = { '30':0, '200':0, '1M':0, mt:0 };
+  list.forEach(med=>{
+    med.dilutions.forEach(b=> Object.keys(b.potencies).forEach(p=>{ if(totals[p]===undefined) totals[p]=0; totals[p]+= Number(b.potencies[p])||0; }));
+    Object.values(med.motherTincture||{}).forEach(v=> totals.mt += Number(v)||0);
+  });
+  return totals;
+}
+
+/* ---------- Context: unifies "generic medicines" and "one company's patent medicines"
+   so every screen (list, detail, table) can be written once and reused for both. ---------- */
+function getContext(r){
+  if(r.kind === 'company'){
+    const company = companies.find(c=>c.id===r.companyId);
+    if(!company) return null;
+    return {
+      kind:'company', company,
+      list: company.medicines,
+      persist: saveCompanies,
+      title: company.name,
+      subtitle: 'Patent Medicines',
+      allowSuggestions: false,
+      newDefaults: ()=> ({ dilutions: [], motherTincture: {} }),
+      backRoute: {page:'companiesHome'}
+    };
+  }
+  return {
+    kind:'generic',
+    list: genericStock,
+    persist: saveGeneric,
+    title: 'Homoeopathic Medicines',
+    subtitle: 'Materia Medica',
+    allowSuggestions: true,
+    newDefaults: ()=> ({ dilutions: standardDilutions(), motherTincture: standardMT() }),
+    backRoute: {page:'landing'}
+  };
+}
+
+/* ---------- Image helper: resize to keep localStorage light ---------- */
+function fileToResizedDataUrl(file, maxSize){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width*scale));
+        const h = Math.max(1, Math.round(img.height*scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ---------- Icons ---------- */
+const ICONS = {
+  search: `<svg class="s-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>`,
+  clear: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+  back: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>`,
+  plus: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>`,
+  grid: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>`,
+  user: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg>`,
+  edit: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
+  trash: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>`,
+  x: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+  flask: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6M10 3v6l-5.5 9.5A1 1 0 0 0 5.4 20h13.2a1 1 0 0 0 .9-1.5L14 9V3"/><path d="M7.5 15h9"/></svg>`,
+  building: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1"/></svg>`,
+  arrow: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`,
+  camera: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.3"/></svg>`,
+  clipboard: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="4" width="12" height="17" rx="1.5"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1M9 11h6M9 15h6M9 19h3"/></svg>`,
+  check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>`,
+  warning: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L2.5 17a1.5 1.5 0 0 0 1.3 2.2h16.4a1.5 1.5 0 0 0 1.3-2.2L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z"/></svg>`,
+  bottle: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="19" fill="#2C4A3B"/>
+      <circle cx="20" cy="20" r="19" stroke="#A8C3A0" stroke-width="1"/>
+      <path d="M17.5 8h5v4.2l2.6 3.4c.6.8.9 1.8.9 2.8v9.1c0 1.9-1.6 3.5-3.5 3.5h-5c-1.9 0-3.5-1.6-3.5-3.5v-9.1c0-1 .3-2 .9-2.8l2.6-3.4V8Z" stroke="#EDE6D6" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M15.6 22.5h8.8" stroke="#EDE6D6" stroke-width="1.4"/>
+      <rect x="17" y="6.3" width="6" height="2.4" rx="0.6" fill="#C08A3E"/>
+      <path d="M20 25.2v3.6M18.5 27.2h3" stroke="#A8C3A0" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`
+};
+
+/* ================= In-app dialogs (native prompt/confirm/alert are blocked on installed PWAs) ================= */
+function showInputModal(title, placeholder, onConfirm, subtitle){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${escapeHtml(title)}</div>
+      ${subtitle ? `<div class="modal-sub">${escapeHtml(subtitle)}</div>` : ''}
+      <input class="text-input" id="dlgInput" placeholder="${escapeHtml(placeholder)}" autocomplete="off">
+      <button class="primary-btn" id="dlgOk">Add</button>
+      <button class="ghost-btn" id="dlgCancel" style="color:var(--ink-soft);">Cancel</button>
+    </div>`;
+  document.body.appendChild(bg);
+  const input = document.getElementById('dlgInput');
+  setTimeout(()=> input.focus(), 30);
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('dlgCancel').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+  const confirmFn = ()=>{ const val = input.value.trim(); if(!val){ input.focus(); return; } close(); onConfirm(val); };
+  document.getElementById('dlgOk').onclick = confirmFn;
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter') confirmFn(); });
+}
+
+function showConfirmModal(title, message, onConfirm, confirmLabel){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${escapeHtml(title)}</div>
+      <div style="font-size:14px; color:var(--ink-soft); margin-bottom:18px;">${escapeHtml(message)}</div>
+      <button class="primary-btn" id="dlgOk" style="background:var(--danger);">${escapeHtml(confirmLabel||'Remove')}</button>
+      <button class="ghost-btn" id="dlgCancel" style="color:var(--ink-soft);">Cancel</button>
+    </div>`;
+  document.body.appendChild(bg);
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('dlgCancel').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+  document.getElementById('dlgOk').onclick = ()=>{ close(); onConfirm(); };
+}
+
+let toastTimer = null;
+function showToast(msg){
+  let t = document.getElementById('toastEl');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toastEl';
+    t.style.cssText = 'position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:var(--botanical); color:var(--paper); padding:12px 20px; border-radius:24px; font-size:13.5px; font-weight:600; z-index:100; box-shadow:0 8px 20px rgba(0,0,0,0.25); max-width:85%; text-align:center;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.style.transition='opacity 0.4s'; t.style.opacity='0'; }, 2200);
+}
+
+function showChoiceModal(title, choices){
+  // choices: [{label, sub, onSelect}]
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${escapeHtml(title)}</div>
+      <div class="choice-row" id="choiceRow"></div>
+      <button class="ghost-btn" id="dlgCancel" style="color:var(--ink-soft);">Cancel</button>
+    </div>`;
+  document.body.appendChild(bg);
+  const row = document.getElementById('choiceRow');
+  choices.forEach((c, i)=>{
+    const btn = document.createElement('div');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<div class="display">${escapeHtml(c.label)}</div><div class="sub">${escapeHtml(c.sub||'')}</div>`;
+    btn.onclick = ()=>{ document.body.removeChild(bg); c.onSelect(); };
+    row.appendChild(btn);
+  });
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('dlgCancel').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+}
+
+/* ================= Render root ================= */
+const app = document.getElementById('app');
+function render(){
+  if(route.page==='landing') renderLanding();
+  else if(route.page==='ordersHome') renderOrdersHome();
+  else if(route.page==='orderDetail') renderOrderDetail(route.orderId);
+  else if(route.page==='stockHome') renderStockHome(route);
+  else if(route.page==='medDetail') renderDetail(route);
+  else if(route.page==='companiesHome') renderCompaniesHome();
+  else if(route.page==='stockTable') renderContextTable(route);
+  else if(route.page==='patentsTable') renderPatentsTable();
+  else if(route.page==='profile') renderProfile();
+}
+
+/* ================= LANDING (top-level home) ================= */
+function renderLanding(){
+  const genericTotal = listTotal(genericStock);
+  const genericStockedCount = listStockedCount(genericStock);
+  const allPatentMeds = companies.flatMap(c=>c.medicines);
+  const patentTotal = listTotal(allPatentMeds);
+  const patentStockedCount = listStockedCount(allPatentMeds);
+  const openOrdersCount = orders.filter(o=>o.status==='draft').length;
+
+  app.innerHTML = `
+    <header class="top">
+      <div class="brand-row">
+        <div class="brand">
+          <div class="brand-mark">${ICONS.bottle}</div>
+          <div>
+            <div class="brand-name">Materia Depot</div>
+            <div class="brand-sub">Stock &amp; Dispensary Register</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <div class="icon-btn" id="btnTableChoice">${ICONS.grid}</div>
+          <div class="icon-btn" id="btnProfile">${ICONS.user}</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="ledger">
+        <div class="ledger-title">Total stock on hand</div>
+        <div class="ledger-total"><span class="num mono">${genericTotal + patentTotal}</span><span class="label">units across the whole depot</span></div>
+        <div class="ledger-split">
+          <div class="ledger-split-cell"><div class="v">${genericTotal}</div><div class="l">Medicines</div></div>
+          <div class="ledger-split-cell"><div class="v">${patentTotal}</div><div class="l">Patents</div></div>
+        </div>
+      </div>
+
+      <div class="nav-card" id="cardMedicines">
+        <div class="nav-card-icon">${ICONS.flask}</div>
+        <div>
+          <div class="nav-card-title">Homoeopathic Medicines</div>
+          <div class="nav-card-meta">${genericStockedCount} stocked · ${genericStock.length} in register</div>
+        </div>
+        <div class="nav-card-arrow">${ICONS.arrow}</div>
+      </div>
+
+      <div class="nav-card" id="cardCompanies">
+        <div class="nav-card-icon">${ICONS.building}</div>
+        <div>
+          <div class="nav-card-title">Company / Patent Medicines</div>
+          <div class="nav-card-meta">${companies.length} compan${companies.length!==1?'ies':'y'} · ${patentStockedCount} stocked</div>
+        </div>
+        <div class="nav-card-arrow">${ICONS.arrow}</div>
+      </div>
+
+      <div class="nav-card" id="cardOrders">
+        <div class="nav-card-icon">${ICONS.clipboard}</div>
+        <div>
+          <div class="nav-card-title">Orders</div>
+          <div class="nav-card-meta">${openOrdersCount} open · ${orders.length} total</div>
+        </div>
+        <div class="nav-card-arrow">${ICONS.arrow}</div>
+      </div>
+    </main>
+  `;
+  document.getElementById('cardMedicines').onclick = ()=>{ route={page:'stockHome', kind:'generic'}; render(); };
+  document.getElementById('cardCompanies').onclick = ()=>{ route={page:'companiesHome'}; render(); };
+  document.getElementById('cardOrders').onclick = ()=>{ route={page:'ordersHome'}; render(); };
+  document.getElementById('btnProfile').onclick = ()=>{ route={page:'profile'}; render(); };
+  document.getElementById('btnTableChoice').onclick = ()=>{
+    showChoiceModal('View which table?', [
+      { label:'Medicines table', sub:'Generic homoeopathic stock', onSelect: ()=>{ route={page:'stockTable', kind:'generic'}; render(); } },
+      { label:'Patents table', sub:'All company medicines combined', onSelect: ()=>{ route={page:'patentsTable'}; render(); } }
+    ]);
+  };
+}
+
+/* ================= STOCK HOME (reusable: generic medicines OR one company's medicines) ================= */
+function renderStockHome(r){
+  const ctx = getContext(r);
+  if(!ctx){ route={page:'landing'}; return render(); }
+
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row" style="margin-bottom:14px;">
+        <div class="back-left">
+          <div class="icon-btn" id="btnBack">${ICONS.back}</div>
+          <div>
+            <div class="brand-name" style="font-size:17px;">${escapeHtml(ctx.title)}</div>
+            <div class="brand-sub">${escapeHtml(ctx.subtitle)}</div>
+          </div>
+        </div>
+        <div class="icon-btn" id="btnTable">${ICONS.grid}</div>
+      </div>
+      <div class="search-wrap">
+        ${ICONS.search}
+        <input id="searchInput" placeholder="Search medicine…" autocomplete="off">
+        <div class="clear-icon hidden" id="clearSearch">${ICONS.clear}</div>
+      </div>
+    </header>
+    <main><div id="homeBody"></div></main>
+    <button class="fab" id="btnAdd">${ICONS.plus}</button>
+  `;
+  const input = document.getElementById('searchInput');
+  input.addEventListener('input', ()=> updateHomeBody(ctx));
+  document.getElementById('clearSearch').onclick = ()=>{ input.value=''; updateHomeBody(ctx); input.focus(); };
+  document.getElementById('btnBack').onclick = ()=>{ route=ctx.backRoute; render(); };
+  document.getElementById('btnTable').onclick = ()=>{ route={page:'stockTable', kind:r.kind, companyId:r.companyId}; render(); };
+  document.getElementById('btnAdd').onclick = ()=> openAddMedicineModal(ctx, r);
+  updateHomeBody(ctx);
+}
+
+function updateHomeBody(ctx){
+  const input = document.getElementById('searchInput');
+  const q = (input ? input.value : '').trim();
+  const clearIcon = document.getElementById('clearSearch');
+  if(clearIcon) clearIcon.classList.toggle('hidden', q.length===0);
+  const body = document.getElementById('homeBody');
+  const list = ctx.list;
+
+  if(q.length===0){
+    const totals = potencyBreakdown(list);
+    const showMT = ctx.kind === 'generic';
+    body.innerHTML = `
+      <div class="ledger">
+        <div class="ledger-title">Total in this section</div>
+        <div class="ledger-total"><span class="num mono">${listTotal(list)}</span><span class="label">units across ${listStockedCount(list)} stocked</span></div>
+        <div class="ledger-grid" style="${showMT ? '' : 'grid-template-columns:repeat(3,1fr);'}">
+          <div class="ledger-cell"><div class="val">${totals['30']||0}</div><div class="tag">30 POTENCY</div></div>
+          <div class="ledger-cell"><div class="val">${totals['200']||0}</div><div class="tag">200 POTENCY</div></div>
+          <div class="ledger-cell"><div class="val">${totals['1M']||0}</div><div class="tag">1M POTENCY</div></div>
+          ${showMT ? `<div class="ledger-cell"><div class="val">${totals.mt||0}</div><div class="tag">MOTHER T.</div></div>` : ''}
+        </div>
+      </div>
+      <div class="section-row">
+        <div class="section-title">${ctx.kind==='company' ? 'Patent Medicines' : 'Medicines'}</div>
+        <span class="count-chip">${list.length} in register</span>
+      </div>
+      ${renderMedList(list)}
+    `;
+    attachMedCardHandlers(body);
+    return;
+  }
+  if(q.length < 2){ body.innerHTML = `<div class="hint">Keep typing… (2+ letters to search)</div>`; return; }
+
+  const filtered = list.filter(m=> m.name.toLowerCase().includes(q.toLowerCase()));
+  body.innerHTML = `
+    <div class="section-row"><span class="count-chip">${filtered.length} match${filtered.length!==1?'es':''}</span></div>
+    ${renderMedList(filtered)}
+  `;
+  attachMedCardHandlers(body);
+}
+
+function renderMedList(list){
+  if(list.length===0){
+    return `<div class="empty"><div class="display">Nothing here yet</div><div>Tap + to add one.</div></div>`;
+  }
+  return list.map(m=>{
+    const t = medTotal(m);
+    const stocked = isStocked(m);
+    return `
+    <div class="med-card" data-id="${m.id}">
+      <div>
+        <div class="med-name">${escapeHtml(m.name)}</div>
+        <div class="med-meta">${stocked ? (m.dilutions.length + ' size' + (m.dilutions.length!==1?'s':'') + (Object.keys(m.motherTincture||{}).length ? ' · Mother tincture' : '')) : 'No stock recorded yet'}</div>
+      </div>
+      <div class="med-badge ${t===0?'zero':''}">${t}</div>
+    </div>`;
+  }).join('');
+}
+
+function attachMedCardHandlers(scope){
+  scope.querySelectorAll('.med-card').forEach(c=>{
+    c.onclick = ()=>{ route={...route, page:'medDetail', medId:c.dataset.id, mode:'view'}; render(); };
+  });
+}
+
+/* ================= DETAIL (view / edit split, works for generic + company items) ================= */
+function renderDetail(r){
+  const ctx = getContext(r);
+  if(!ctx) { route={page:'landing'}; return render(); }
+  const med = ctx.list.find(m=>m.id===r.medId);
+  if(!med){ route={page:'stockHome', kind:r.kind, companyId:r.companyId}; return render(); }
+  const mode = r.mode || 'view';
+
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row">
+        <div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div></div>
+        <div class="pill-btn ${mode==='edit'?'active':''}" id="btnToggleEdit">${ICONS.edit} ${mode==='edit' ? 'Done' : 'Edit'}</div>
+      </div>
+      <div class="detail-title">${escapeHtml(med.name)}</div>
+      <div class="detail-sub">${medTotal(med)} units total in stock</div>
+    </header>
+    <main id="detailBody"></main>
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'stockHome', kind:r.kind, companyId:r.companyId}; render(); };
+  document.getElementById('btnToggleEdit').onclick = ()=>{ route={...r, mode: mode==='edit' ? 'view' : 'edit'}; render(); };
+
+  const body = document.getElementById('detailBody');
+  const showMT = ctx.kind === 'generic';
+  body.innerHTML = mode==='edit' ? detailEditHTML(med, showMT) : detailViewHTML(med, showMT);
+  if(mode==='edit') attachEditHandlers(ctx, med, r);
+}
+
+function detailViewHTML(med, showMT){
+  const hasAny = med.dilutions.length>0 || (showMT && Object.keys(med.motherTincture||{}).length>0);
+  if(!hasAny){
+    return `<div class="empty"><div class="display">No stock recorded yet</div><div>Tap "Edit" above to add sizes.</div></div>`;
+  }
+  let html = '';
+  med.dilutions.forEach(b=>{
+    html += `
+      <div class="group">
+        <div class="group-head"><span class="group-label">${escapeHtml(b.size)}</span></div>
+        <div class="bottle-block">
+          ${Object.keys(b.potencies).map(p=>`
+            <div class="potency-row">
+              <span class="potency-name">${escapeHtml(p)}</span>
+              <span class="potency-val">${b.potencies[p]}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  });
+  if(showMT){
+    const mtKeys = Object.keys(med.motherTincture||{});
+    if(mtKeys.length){
+      html += `
+        <div class="group">
+          <div class="group-head"><span class="group-label">Mother Tincture</span></div>
+          <div class="bottle-block">
+            ${mtKeys.map(p=>`
+              <div class="potency-row">
+                <span class="potency-name">${escapeHtml(p)}</span>
+                <span class="potency-val">${med.motherTincture[p]}</span>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }
+  }
+  return html;
+}
+
+function detailEditHTML(med, showMT){
+  const dilBlock = med.dilutions.map((b,bi)=>`
+      <div class="group">
+        <div class="group-head"><span class="group-label">${escapeHtml(b.size)}</span></div>
+        <div class="bottle-block">
+          <div class="bottle-head">
+            <span class="bottle-size">${escapeHtml(b.size)}</span>
+            <span class="remove-bottle" data-remove-bottle="${bi}">Remove size</span>
+          </div>
+          ${Object.keys(b.potencies).map(p=>`
+            <div class="potency-row">
+              <span class="potency-name">${escapeHtml(p)}</span>
+              <div class="qty-control">
+                <div class="qty-btn" data-dec-b="${bi}" data-pot="${p}">−</div>
+                <input class="qty-input" type="number" min="0" value="${b.potencies[p]}" data-qty-b="${bi}" data-pot-input="${p}">
+                <div class="qty-btn" data-inc-b="${bi}" data-pot="${p}">+</div>
+                <div class="row-remove-x" data-remove-potency="${bi}" data-remove-potency-key="${escapeHtml(p)}" title="Remove this potency">${ICONS.x}</div>
+              </div>
+            </div>`).join('')}
+          <div class="add-line" data-add-potency="${bi}">${ICONS.plus} Add potency / variant</div>
+        </div>
+      </div>
+  `).join('');
+
+  const mtBlock = showMT ? `
+    <div class="group" style="margin-top:6px;">
+      <div class="group-head"><span class="group-label">Mother Tincture</span></div>
+      <div class="bottle-block">
+        ${Object.keys(med.motherTincture).map(p=>`
+          <div class="potency-row">
+            <span class="potency-name">${escapeHtml(p)}</span>
+            <div class="qty-control">
+              <div class="qty-btn" data-dec-mt="${p}">−</div>
+              <input class="qty-input" type="number" min="0" value="${med.motherTincture[p]}" data-qty-mt="${p}">
+              <div class="qty-btn" data-inc-mt="${p}">+</div>
+              <div class="row-remove-x" data-remove-mt="${escapeHtml(p)}" title="Remove this size">${ICONS.x}</div>
+            </div>
+          </div>`).join('')}
+        <div class="add-line" id="btnAddMt">${ICONS.plus} Add mother tincture size</div>
+      </div>
+    </div>` : '';
+
+  return `
+    ${dilBlock}
+    <div class="add-line" id="btnAddBottle">${ICONS.plus} Add size / pack (e.g. 100ml, 450ml, strip of 10)</div>
+    ${mtBlock}
+    <button class="ghost-btn" id="btnDelete">Remove this medicine from register</button>
+  `;
+}
+
+function attachEditHandlers(ctx, med, r){
+  const refresh = ()=>{ ctx.persist(); route={...r}; render(); };
+
+  document.getElementById('btnAddBottle').onclick = ()=>{
+    showInputModal('New size / pack', 'e.g. 30ml, 100ml, 450ml, strip of 10', (size)=>{
+      const defaultPotencies = ctx.kind==='generic' ? { '30':0,'200':0,'1M':0 } : {};
+      med.dilutions.push({ size, potencies: defaultPotencies }); refresh();
+    });
+  };
+  const btnAddMt = document.getElementById('btnAddMt');
+  if(btnAddMt) btnAddMt.onclick = ()=>{
+    showInputModal('New mother tincture size', 'e.g. 30ml, 100ml, Pond', (size)=>{
+      med.motherTincture[size] = 0; refresh();
+    });
+  };
+  document.getElementById('btnDelete').onclick = ()=>{
+    showConfirmModal('Remove medicine?', `Remove "${med.name}" from the register? This cannot be undone.`, ()=>{
+      const idx = ctx.list.findIndex(m=>m.id===med.id);
+      if(idx>-1) ctx.list.splice(idx,1);
+      ctx.persist();
+      route={page:'stockHome', kind:r.kind, companyId:r.companyId}; render();
+    });
+  };
+  document.querySelectorAll('[data-remove-bottle]').forEach(el=>{
+    el.onclick = ()=>{ med.dilutions.splice(Number(el.dataset.removeBottle),1); refresh(); };
+  });
+  document.querySelectorAll('[data-add-potency]').forEach(el=>{
+    el.onclick = ()=>{
+      const bi = Number(el.dataset.addPotency);
+      showInputModal('New potency / variant label', 'e.g. 30, 200, 1M, 10M', (p)=>{
+        med.dilutions[bi].potencies[p] = 0; refresh();
+      });
+    };
+  });
+  document.querySelectorAll('[data-remove-potency]').forEach(el=>{
+    el.onclick = ()=>{
+      const bi = Number(el.dataset.removePotency);
+      const key = el.dataset.removePotencyKey;
+      showConfirmModal('Remove this row?', `Remove "${key}" from ${med.dilutions[bi].size}? This deletes that quantity too.`, ()=>{
+        delete med.dilutions[bi].potencies[key]; refresh();
+      });
+    };
+  });
+  document.querySelectorAll('[data-remove-mt]').forEach(el=>{
+    el.onclick = ()=>{
+      const key = el.dataset.removeMt;
+      showConfirmModal('Remove this row?', `Remove "${key}" from Mother Tincture? This deletes that quantity too.`, ()=>{
+        delete med.motherTincture[key]; refresh();
+      });
+    };
+  });
+  document.querySelectorAll('[data-inc-b]').forEach(el=>{
+    el.onclick = ()=>{ const bi=el.dataset.incB, p=el.dataset.pot; med.dilutions[bi].potencies[p]=(Number(med.dilutions[bi].potencies[p])||0)+1; refresh(); };
+  });
+  document.querySelectorAll('[data-dec-b]').forEach(el=>{
+    el.onclick = ()=>{ const bi=el.dataset.decB, p=el.dataset.pot; med.dilutions[bi].potencies[p]=Math.max(0,(Number(med.dilutions[bi].potencies[p])||0)-1); refresh(); };
+  });
+  document.querySelectorAll('[data-qty-b]').forEach(el=>{
+    el.onchange = ()=>{ const bi=el.dataset.qtyB, p=el.dataset.potInput; med.dilutions[bi].potencies[p]=Math.max(0, Number(el.value)||0); ctx.persist(); };
+  });
+  document.querySelectorAll('[data-inc-mt]').forEach(el=>{
+    el.onclick = ()=>{ const p=el.dataset.incMt; med.motherTincture[p]=(Number(med.motherTincture[p])||0)+1; refresh(); };
+  });
+  document.querySelectorAll('[data-dec-mt]').forEach(el=>{
+    el.onclick = ()=>{ const p=el.dataset.decMt; med.motherTincture[p]=Math.max(0,(Number(med.motherTincture[p])||0)-1); refresh(); };
+  });
+  document.querySelectorAll('[data-qty-mt]').forEach(el=>{
+    el.onchange = ()=>{ const p=el.dataset.qtyMt; med.motherTincture[p]=Math.max(0, Number(el.value)||0); ctx.persist(); };
+  });
+}
+
+/* ================= COMPANIES HOME (manage patent-medicine companies) ================= */
+function renderCompaniesHome(){
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row">
+        <div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div><div class="brand-name" style="font-size:17px;">Companies</div></div>
+      </div>
+    </header>
+    <main id="companiesBody"></main>
+    <button class="fab" id="btnAddCompany">${ICONS.plus}</button>
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'landing'}; render(); };
+  document.getElementById('btnAddCompany').onclick = ()=> openAddCompanyModal();
+  renderCompaniesList();
+}
+
+function renderCompaniesList(){
+  const body = document.getElementById('companiesBody');
+  if(companies.length===0){
+    body.innerHTML = `<div class="empty"><div class="display">No companies yet</div><div>Tap + to add a company whose patent medicines you stock.</div></div>`;
+    return;
+  }
+  body.innerHTML = companies.map(c=>{
+    const total = listTotal(c.medicines);
+    return `
+    <div class="company-card">
+      <div class="company-avatar" data-open="${c.id}">${c.logo ? `<img src="${c.logo}">` : escapeHtml((c.name||'?')[0].toUpperCase())}</div>
+      <div class="company-info" data-open="${c.id}">
+        <div class="company-name">${escapeHtml(c.name)}</div>
+        <div class="company-meta">${c.medicines.length} medicines · ${total} units</div>
+      </div>
+      <div class="company-actions">
+        <div class="mini-icon-btn" data-edit="${c.id}">${ICONS.edit}</div>
+        <div class="mini-icon-btn danger" data-delete="${c.id}">${ICONS.trash}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  body.querySelectorAll('[data-open]').forEach(el=>{
+    el.onclick = ()=>{ route={page:'stockHome', kind:'company', companyId:el.dataset.open}; render(); };
+  });
+  body.querySelectorAll('[data-edit]').forEach(el=>{
+    el.onclick = ()=> openEditCompanyModal(companies.find(c=>c.id===el.dataset.edit));
+  });
+  body.querySelectorAll('[data-delete]').forEach(el=>{
+    el.onclick = ()=>{
+      const company = companies.find(c=>c.id===el.dataset.delete);
+      showConfirmModal('Remove company?', `Remove "${company.name}" and all ${company.medicines.length} of its medicines? This cannot be undone.`, ()=>{
+        companies = companies.filter(c=>c.id!==company.id);
+        saveCompanies();
+        renderCompaniesList();
+      });
+    };
+  });
+}
+
+function openAddCompanyModal(){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Add a company</div>
+      <div class="avatar-upload">
+        <div class="avatar-circle" id="logoCircle">${ICONS.camera}</div>
+        <div class="avatar-hint">Optional logo<div class="link-btn" id="pickLogo">Choose photo</div></div>
+        <input type="file" id="logoFile" accept="image/*" class="hidden">
+      </div>
+      <span class="field-label">Company name</span>
+      <input class="text-input" id="companyName" placeholder="e.g. SBL, Bakson, Reckeweg" autocomplete="off">
+      <button class="primary-btn" id="confirmAddCompany">Add company</button>
+      <button class="ghost-btn" id="cancelAddCompany" style="color:var(--ink-soft);">Cancel</button>
+    </div>`;
+  document.body.appendChild(bg);
+  let logoData = '';
+  document.getElementById('pickLogo').onclick = ()=> document.getElementById('logoFile').click();
+  document.getElementById('logoCircle').onclick = ()=> document.getElementById('logoFile').click();
+  document.getElementById('logoFile').onchange = async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    logoData = await fileToResizedDataUrl(file, 200);
+    document.getElementById('logoCircle').innerHTML = `<img src="${logoData}">`;
+  };
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('cancelAddCompany').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+  document.getElementById('confirmAddCompany').onclick = ()=>{
+    const name = document.getElementById('companyName').value.trim();
+    if(!name) return;
+    companies.push({ id: cryptoId(), name, logo: logoData, medicines: [] });
+    saveCompanies();
+    close();
+    renderCompaniesList();
+  };
+}
+
+function openEditCompanyModal(company){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Edit company</div>
+      <div class="avatar-upload">
+        <div class="avatar-circle" id="logoCircle">${company.logo ? `<img src="${company.logo}">` : ICONS.camera}</div>
+        <div class="avatar-hint">Logo<div class="link-btn" id="pickLogo">Change photo</div></div>
+        <input type="file" id="logoFile" accept="image/*" class="hidden">
+      </div>
+      <span class="field-label">Company name</span>
+      <input class="text-input" id="companyName" value="${escapeHtml(company.name)}" autocomplete="off">
+      <button class="primary-btn" id="confirmEditCompany">Save changes</button>
+      <button class="ghost-btn" id="cancelEditCompany" style="color:var(--ink-soft);">Cancel</button>
+    </div>`;
+  document.body.appendChild(bg);
+  let logoData = company.logo || '';
+  document.getElementById('pickLogo').onclick = ()=> document.getElementById('logoFile').click();
+  document.getElementById('logoCircle').onclick = ()=> document.getElementById('logoFile').click();
+  document.getElementById('logoFile').onchange = async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    logoData = await fileToResizedDataUrl(file, 200);
+    document.getElementById('logoCircle').innerHTML = `<img src="${logoData}">`;
+  };
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('cancelEditCompany').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+  document.getElementById('confirmEditCompany').onclick = ()=>{
+    const name = document.getElementById('companyName').value.trim();
+    if(!name) return;
+    company.name = name; company.logo = logoData;
+    saveCompanies();
+    close();
+    renderCompaniesList();
+  };
+}
+
+/* ================= TABLE (context-based: generic OR one company) ================= */
+function renderContextTable(r){
+  const ctx = getContext(r);
+  if(!ctx){ route={page:'landing'}; return render(); }
+  const stocked = ctx.list.filter(m=>medTotal(m) > 0);
+  const { dilCols, mtCols } = buildColumns(stocked);
+
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row"><div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div><div class="brand-name" style="font-size:17px;">${escapeHtml(ctx.title)} — Table</div></div></div>
+    </header>
+    <main>
+      ${renderTableHTML(stocked, dilCols, mtCols, false)}
+      <button class="primary-btn" id="btnExport" style="margin-top:18px; background:var(--amber);">Export data (JSON backup)</button>
+    </main>
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'stockHome', kind:r.kind, companyId:r.companyId}; render(); };
+  document.getElementById('btnExport').onclick = exportData;
+}
+
+function renderPatentsTable(){
+  const rows = companies.flatMap(c=> c.medicines.filter(m=>medTotal(m)>0).map(m=> ({...m, __company: c.name})));
+  const { dilCols, mtCols } = buildColumns(rows);
+
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row"><div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div><div class="brand-name" style="font-size:17px;">Patents — All Companies</div></div></div>
+    </header>
+    <main>
+      ${renderTableHTML(rows, dilCols, mtCols, true)}
+      <button class="primary-btn" id="btnExport" style="margin-top:18px; background:var(--amber);">Export data (JSON backup)</button>
+    </main>
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'landing'}; render(); };
+  document.getElementById('btnExport').onclick = exportData;
+}
+
+function buildColumns(stocked){
+  const dilCols = []; const seenDil = new Set();
+  stocked.forEach(m=> m.dilutions.forEach(b=> Object.keys(b.potencies).forEach(p=>{
+    const key = `${b.size}|${p}`;
+    if(!seenDil.has(key)){ seenDil.add(key); dilCols.push({size:b.size, pot:p, key}); }
+  })));
+  const mtCols = []; const seenMt = new Set();
+  stocked.forEach(m=> Object.keys(m.motherTincture||{}).forEach(sz=>{ if(!seenMt.has(sz)){ seenMt.add(sz); mtCols.push(sz); } }));
+  return { dilCols, mtCols };
+}
+
+function renderTableHTML(rows, dilCols, mtCols, showCompanyCol){
+  if(rows.length===0){
+    return `<div class="empty"><div class="display">Nothing to show</div><div>Add stock to a medicine first.</div></div>`;
+  }
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          ${showCompanyCol ? '<th>Company</th>' : ''}
+          <th>Medicine</th>
+          ${dilCols.map(c=>`<th>${escapeHtml(c.size)}<br>${escapeHtml(c.pot)}</th>`).join('')}
+          ${mtCols.map(sz=>`<th>MT<br>${escapeHtml(sz)}</th>`).join('')}
+          <th>Total</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(m=>`
+            <tr>
+              ${showCompanyCol ? `<td>${escapeHtml(m.__company||'')}</td>` : ''}
+              <td class="name-cell">${escapeHtml(m.name)}</td>
+              ${dilCols.map(c=>{
+                const b = m.dilutions.find(x=>x.size===c.size);
+                const v = b && b.potencies[c.pot]!==undefined ? b.potencies[c.pot] : null;
+                return `<td>${v===null ? '<span class="dash">—</span>' : v}</td>`;
+              }).join('')}
+              ${mtCols.map(sz=>{
+                const v = (m.motherTincture||{})[sz];
+                return `<td>${v===undefined ? '<span class="dash">—</span>' : v}</td>`;
+              }).join('')}
+              <td class="total-cell">${medTotal(m)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/* ================= ORDERS ================= */
+function allMedicinesFlat(){
+  const generic = genericStock.map(m=>({ kind:'generic', companyId:null, companyName:null, med:m }));
+  const patent = companies.flatMap(c=> c.medicines.map(m=>({ kind:'company', companyId:c.id, companyName:c.name, med:m })));
+  return [...generic, ...patent];
+}
+
+function variantsFor(entry){
+  const list = [];
+  entry.med.dilutions.forEach(b=> Object.keys(b.potencies).forEach(p=>{
+    list.push({ label: `${b.size} · ${p}`, currentQty: Number(b.potencies[p])||0, ref: { type:'dilution', size:b.size, potency:p } });
+  }));
+  if(entry.kind==='generic'){
+    Object.keys(entry.med.motherTincture||{}).forEach(k=>{
+      list.push({ label: `MT · ${k}`, currentQty: Number(entry.med.motherTincture[k])||0, ref: { type:'mt', key:k } });
+    });
+  }
+  return list;
+}
+
+function findMedList(kind, companyId){
+  if(kind==='generic') return genericStock;
+  const c = companies.find(x=>x.id===companyId);
+  return c ? c.medicines : [];
+}
+
+function checkStockShortages(order){
+  const shortages = [];
+  order.items.forEach(item=>{
+    const list = findMedList(item.kind, item.companyId);
+    const med = list.find(m=>m.id===item.medId);
+    let available = 0, exists = true;
+    if(!med){ exists = false; }
+    else if(item.variant.type==='dilution'){
+      const bottle = med.dilutions.find(b=>b.size===item.variant.size);
+      if(!bottle || bottle.potencies[item.variant.potency]===undefined) exists = false;
+      else available = Number(bottle.potencies[item.variant.potency])||0;
+    } else {
+      if(med.motherTincture[item.variant.key]===undefined) exists = false;
+      else available = Number(med.motherTincture[item.variant.key])||0;
+    }
+    if(!exists){
+      shortages.push({ medName:item.medName, variantLabel:item.variantLabel, available:0, ordered:item.qty, missing:true });
+    } else if(available < item.qty){
+      shortages.push({ medName:item.medName, variantLabel:item.variantLabel, available, ordered:item.qty, missing:false });
+    }
+  });
+  return shortages;
+}
+
+function showShortageModal(order, shortages){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  const listHTML = shortages.map(s=>
+    `<div>${escapeHtml(s.medName)} — ${escapeHtml(s.variantLabel)}: ${s.missing ? 'no longer in the register' : `only <b>${s.available}</b> in stock, order needs <b>${s.ordered}</b>`}</div>`
+  ).join('');
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${ICONS.warning} Some items are short on stock</div>
+      <div class="problem-list">${listHTML}</div>
+      <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;">Fulfilling anyway will set these items to 0. You can cancel and restock first, or complete this order partially later.</div>
+      <button class="primary-btn" id="dlgOk" style="background:var(--danger);">Fulfill anyway</button>
+      <button class="ghost-btn" id="dlgCancel" style="color:var(--ink-soft);">Go back</button>
+    </div>`;
+  document.body.appendChild(bg);
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('dlgCancel').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+  document.getElementById('dlgOk').onclick = ()=>{
+    close();
+    fulfillOrder(order);
+    showToast(`Fulfilled — ${shortages.length} item${shortages.length!==1?'s':''} went short.`);
+    renderOrderDetail(order.id);
+  };
+}
+
+function showFulfillFlow(order){
+  const shortages = checkStockShortages(order);
+  if(shortages.length){
+    showShortageModal(order, shortages);
+    return;
+  }
+  showConfirmModal(
+    'Fulfill this order?',
+    `This will deduct ${order.items.reduce((s,i)=>s+i.qty,0)} units from inventory for "${order.customerName}" and cannot be undone.`,
+    ()=>{
+      fulfillOrder(order);
+      showToast('Order fulfilled — inventory updated.');
+      renderOrderDetail(order.id);
+    },
+    'Fulfill'
+  );
+}
+
+function fulfillOrder(order){
+  const problems = [];
+  order.items.forEach(item=>{
+    const list = findMedList(item.kind, item.companyId);
+    const med = list.find(m=>m.id===item.medId);
+    if(!med){ problems.push(`${item.medName} (${item.variantLabel}) — this medicine no longer exists in the register`); return; }
+    if(item.variant.type==='dilution'){
+      const bottle = med.dilutions.find(b=>b.size===item.variant.size);
+      if(!bottle || bottle.potencies[item.variant.potency]===undefined){
+        problems.push(`${item.medName} (${item.variantLabel}) — that size/potency no longer exists`); return;
+      }
+      const available = Number(bottle.potencies[item.variant.potency])||0;
+      if(available < item.qty) problems.push(`${item.medName} (${item.variantLabel}) — only ${available} in stock, order asked for ${item.qty}`);
+      bottle.potencies[item.variant.potency] = Math.max(0, available - item.qty);
+    } else {
+      if(med.motherTincture[item.variant.key]===undefined){
+        problems.push(`${item.medName} (${item.variantLabel}) — that size no longer exists`); return;
+      }
+      const available = Number(med.motherTincture[item.variant.key])||0;
+      if(available < item.qty) problems.push(`${item.medName} (${item.variantLabel}) — only ${available} in stock, order asked for ${item.qty}`);
+      med.motherTincture[item.variant.key] = Math.max(0, available - item.qty);
+    }
+  });
+  saveGeneric();
+  saveCompanies();
+  order.status = 'fulfilled';
+  order.fulfilledAt = new Date().toISOString();
+  saveOrders();
+  return problems;
+}
+
+function renderOrdersHome(){
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row"><div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div><div class="brand-name" style="font-size:17px;">Orders</div></div></div>
+    </header>
+    <main id="ordersBody"></main>
+    <button class="fab" id="btnNewOrder">${ICONS.plus}</button>
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'landing'}; render(); };
+  document.getElementById('btnNewOrder').onclick = ()=>{
+    showInputModal('New order', 'Customer or doctor name (e.g. Doc T)', (name)=>{
+      const order = { id: cryptoId(), customerName: name, createdAt: new Date().toISOString(), status:'draft', fulfilledAt:null, items:[] };
+      orders.unshift(order);
+      saveOrders();
+      route={page:'orderDetail', orderId:order.id}; render();
+    });
+  };
+  renderOrdersList();
+}
+
+function renderOrdersList(){
+  const body = document.getElementById('ordersBody');
+  if(orders.length===0){
+    body.innerHTML = `<div class="empty"><div class="display">No orders yet</div><div>Tap + to start one — pick items from your inventory and fulfilling it updates stock automatically.</div></div>`;
+    return;
+  }
+  const drafts = orders.filter(o=>o.status==='draft');
+  const fulfilled = orders.filter(o=>o.status==='fulfilled');
+
+  const cardHTML = (o)=>{
+    const dt = new Date(o.status==='draft' ? o.createdAt : o.fulfilledAt);
+    const dateStr = dt.toLocaleDateString(undefined, {day:'numeric', month:'short', year:'numeric'});
+    return `
+    <div class="order-card" data-open="${o.id}">
+      <div class="order-top-row">
+        <div class="order-customer">${escapeHtml(o.customerName)}</div>
+        <div class="status-badge ${o.status}">${o.status==='draft' ? 'Open' : 'Fulfilled'}</div>
+      </div>
+      <div class="order-meta">${o.items.length} item${o.items.length!==1?'s':''} · ${o.status==='draft' ? 'started' : 'fulfilled'} ${dateStr}</div>
+    </div>`;
+  };
+
+  let html = '';
+  if(drafts.length){
+    html += `<div class="section-row"><div class="section-title">Open orders</div><span class="count-chip">${drafts.length}</span></div>`;
+    html += drafts.map(cardHTML).join('');
+  }
+  if(fulfilled.length){
+    html += `<div class="section-row" style="margin-top:${drafts.length?'22px':'0'};"><div class="section-title">Fulfilled</div><span class="count-chip">${fulfilled.length}</span></div>`;
+    html += fulfilled.map(cardHTML).join('');
+  }
+  body.innerHTML = html;
+  body.querySelectorAll('[data-open]').forEach(el=>{
+    el.onclick = ()=>{ route={page:'orderDetail', orderId:el.dataset.open}; render(); };
+  });
+}
+
+function renderOrderDetail(orderId){
+  const order = orders.find(o=>o.id===orderId);
+  if(!order){ route={page:'ordersHome'}; return render(); }
+  const isDraft = order.status==='draft';
+  const total = order.items.reduce((s,i)=>s+i.qty,0);
+
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row">
+        <div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div></div>
+        <div class="mini-icon-btn danger" id="btnDeleteOrder">${ICONS.trash}</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+        <div>
+          <div class="detail-title" style="margin:0; font-size:22px;">${escapeHtml(order.customerName)}</div>
+          <div class="detail-sub" style="margin-bottom:0;">${order.items.length} item${order.items.length!==1?'s':''} · ${total} units total</div>
+        </div>
+        <div class="status-badge ${order.status}">${isDraft ? 'Open' : 'Fulfilled'}</div>
+      </div>
+    </header>
+    <main id="orderBody"></main>
+    ${isDraft ? `<button class="fab" id="btnAddItem">${ICONS.plus}</button>` : ''}
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'ordersHome'}; render(); };
+  document.getElementById('btnDeleteOrder').onclick = ()=>{
+    showConfirmModal('Delete this order?', 'This only removes the order record — it will not undo any inventory changes already made.', ()=>{
+      orders = orders.filter(o=>o.id!==order.id);
+      saveOrders();
+      route={page:'ordersHome'}; render();
+    });
+  };
+  if(isDraft){
+    document.getElementById('btnAddItem').onclick = ()=> openAddOrderItemModal(order, ()=> renderOrderDetail(order.id));
+  }
+  renderOrderBody(order);
+}
+
+function renderOrderBody(order){
+  const body = document.getElementById('orderBody');
+  const isDraft = order.status==='draft';
+
+  if(order.items.length===0){
+    body.innerHTML = `<div class="empty"><div class="display">No items yet</div><div>Tap + to add medicines from your inventory.</div></div>`;
+  } else {
+    body.innerHTML = order.items.map(item=>`
+      <div class="order-item-row">
+        <div class="order-item-info">
+          <div class="order-item-tag">${item.kind==='generic' ? 'Medicine' : escapeHtml(item.companyName)}</div>
+          <div class="order-item-name">${escapeHtml(item.medName)}</div>
+          <div class="order-item-variant">${escapeHtml(item.variantLabel)}</div>
+        </div>
+        ${isDraft ? `
+        <div class="qty-control">
+          <div class="qty-btn" data-item-dec="${item.id}">−</div>
+          <span class="potency-val" style="width:26px; text-align:center;">${item.qty}</span>
+          <div class="qty-btn" data-item-inc="${item.id}">+</div>
+          <div class="row-remove-x" data-item-remove="${item.id}">${ICONS.x}</div>
+        </div>` : `<span class="potency-val">${item.qty}</span>`}
+      </div>
+    `).join('');
+  }
+
+  if(isDraft && order.items.length>0){
+    body.innerHTML += `<button class="primary-btn fulfill-btn" id="btnFulfill">Fulfill order — update inventory</button>`;
+  }
+  if(!isDraft && order.fulfilledAt){
+    body.innerHTML += `<div class="hint" style="padding-top:14px;">Fulfilled on ${new Date(order.fulfilledAt).toLocaleString()}</div>`;
+  }
+
+  if(isDraft){
+    body.querySelectorAll('[data-item-inc]').forEach(el=>{
+      el.onclick = ()=>{ const item = order.items.find(i=>i.id===el.dataset.itemInc); item.qty += 1; saveOrders(); renderOrderBody(order); };
+    });
+    body.querySelectorAll('[data-item-dec]').forEach(el=>{
+      el.onclick = ()=>{ const item = order.items.find(i=>i.id===el.dataset.itemDec); item.qty = Math.max(1, item.qty-1); saveOrders(); renderOrderBody(order); };
+    });
+    body.querySelectorAll('[data-item-remove]').forEach(el=>{
+      el.onclick = ()=>{ order.items = order.items.filter(i=>i.id!==el.dataset.itemRemove); saveOrders(); renderOrderBody(order); };
+    });
+    const btnFulfill = document.getElementById('btnFulfill');
+    if(btnFulfill) btnFulfill.onclick = ()=> showFulfillFlow(order);
+  }
+}
+
+function openAddOrderItemModal(order, onAdded){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title" id="stepTitle">Add item — search medicine</div>
+      <input class="text-input" id="itemSearch" placeholder="Start typing a medicine name…" autocomplete="off">
+      <div id="stepArea"></div>
+      <button class="ghost-btn" id="cancelItem" style="color:var(--ink-soft);">Cancel</button>
+    </div>`;
+  document.body.appendChild(bg);
+  const close = ()=>{ if(bg.parentNode) document.body.removeChild(bg); };
+  document.getElementById('cancelItem').onclick = close;
+  bg.onclick = (e)=>{ if(e.target===bg) close(); };
+
+  const searchInput = document.getElementById('itemSearch');
+  const stepArea = document.getElementById('stepArea');
+  const stepTitle = document.getElementById('stepTitle');
+  setTimeout(()=> searchInput.focus(), 30);
+  const all = allMedicinesFlat();
+
+  searchInput.addEventListener('input', ()=>{
+    const q = searchInput.value.trim().toLowerCase();
+    if(q.length < 2){ stepArea.innerHTML=''; return; }
+    const matches = all.filter(e=> e.med.name.toLowerCase().includes(q)).slice(0,12);
+    if(matches.length===0){ stepArea.innerHTML = `<div class="hint" style="padding:16px 0;">No matches.</div>`; return; }
+    stepArea.innerHTML = matches.map((e,i)=>`
+      <div class="med-pick-item" data-pick="${i}">
+        <div class="med-pick-name">${escapeHtml(e.med.name)}</div>
+        <div class="med-pick-tag">${e.kind==='generic' ? 'Homoeopathic Medicine' : escapeHtml(e.companyName)}</div>
+      </div>`).join('');
+    stepArea.querySelectorAll('[data-pick]').forEach(el=>{
+      el.onclick = ()=> showVariantStep(matches[Number(el.dataset.pick)]);
+    });
+  });
+
+  function showVariantStep(entry){
+    stepTitle.textContent = `${entry.med.name} — choose size / potency`;
+    searchInput.style.display = 'none';
+    const variants = variantsFor(entry);
+    if(variants.length===0){
+      stepArea.innerHTML = `<div class="hint" style="padding:16px 0;">This medicine has no sizes set up yet — add one from its Edit screen first.</div>`;
+      return;
+    }
+    stepArea.innerHTML = variants.map((v,i)=>`
+      <div class="variant-pick-row" data-vpick="${i}">
+        <span class="variant-pick-label">${escapeHtml(v.label)}</span>
+        <span class="variant-pick-stock">${v.currentQty} in stock</span>
+      </div>`).join('');
+    stepArea.querySelectorAll('[data-vpick]').forEach(el=>{
+      el.onclick = ()=> showQtyStep(entry, variants[Number(el.dataset.vpick)]);
+    });
+  }
+
+  function showQtyStep(entry, variant){
+    stepTitle.textContent = `${entry.med.name} — ${variant.label}`;
+    stepArea.innerHTML = `
+      <span class="field-label">Quantity to fulfill</span>
+      <input class="text-input" id="qtyInput" type="number" min="1" value="1">
+      <button class="primary-btn" id="confirmItemAdd">Add to order</button>
+    `;
+    const qtyInput = document.getElementById('qtyInput');
+    setTimeout(()=> qtyInput.focus(), 30);
+    document.getElementById('confirmItemAdd').onclick = ()=>{
+      const qty = Math.max(1, Number(qtyInput.value)||1);
+      const existing = order.items.find(i=> i.medId===entry.med.id && i.kind===entry.kind && i.companyId===entry.companyId && JSON.stringify(i.variant)===JSON.stringify(variant.ref));
+      if(existing){
+        existing.qty += qty;
+      } else {
+        order.items.push({
+          id: cryptoId(), kind: entry.kind, companyId: entry.companyId, companyName: entry.companyName,
+          medId: entry.med.id, medName: entry.med.name, variant: variant.ref, variantLabel: variant.label, qty
+        });
+      }
+      saveOrders();
+      close();
+      onAdded();
+    };
+  }
+}
+
+/* ================= PROFILE (business info + logo photo) ================= */
+function renderProfile(){
+  app.innerHTML = `
+    <header class="top">
+      <div class="back-row"><div class="back-left"><div class="icon-btn" id="btnBack">${ICONS.back}</div><div class="brand-name" style="font-size:17px;">Company Profile</div></div></div>
+    </header>
+    <main>
+      <div class="avatar-upload">
+        <div class="avatar-circle" id="profileLogoCircle">${profile.logo ? `<img src="${profile.logo}">` : ICONS.camera}</div>
+        <div class="avatar-hint">Business photo / logo<div class="link-btn" id="pickProfileLogo">${profile.logo ? 'Change photo' : 'Add photo'}</div></div>
+        <input type="file" id="profileLogoFile" accept="image/*" class="hidden">
+      </div>
+
+      <span class="field-label">Company name</span>
+      <input class="text-input" id="pName" value="${escapeHtml(profile.name)}" placeholder="e.g. Sharma Homoeo Pharmacy">
+      <span class="field-label">Address</span>
+      <input class="text-input" id="pAddress" value="${escapeHtml(profile.address)}" placeholder="Shop address">
+      <span class="field-label">Email</span>
+      <input class="text-input" id="pEmail" value="${escapeHtml(profile.email)}" placeholder="you@example.com">
+      <button class="primary-btn" id="btnSaveProfile">Save profile</button>
+
+      <div class="group" style="margin-top:26px;">
+        <div class="group-head"><span class="group-label">Data</span></div>
+        <button class="primary-btn" id="btnExport2" style="background:var(--amber);">Export backup (JSON)</button>
+        <button class="ghost-btn" id="btnImport" style="color:var(--botanical);">Import backup</button>
+        <input type="file" id="fileImport" accept="application/json" class="hidden">
+      </div>
+    </main>
+  `;
+  document.getElementById('btnBack').onclick = ()=>{ route={page:'landing'}; render(); };
+  document.getElementById('pickProfileLogo').onclick = ()=> document.getElementById('profileLogoFile').click();
+  document.getElementById('profileLogoCircle').onclick = ()=> document.getElementById('profileLogoFile').click();
+  document.getElementById('profileLogoFile').onchange = async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    profile.logo = await fileToResizedDataUrl(file, 300);
+    saveProfile();
+    renderProfile();
+  };
+  document.getElementById('btnSaveProfile').onclick = ()=>{
+    profile.name = document.getElementById('pName').value;
+    profile.address = document.getElementById('pAddress').value;
+    profile.email = document.getElementById('pEmail').value;
+    saveProfile();
+    showToast('Profile saved.');
+  };
+  document.getElementById('btnExport2').onclick = exportData;
+  document.getElementById('btnImport').onclick = ()=> document.getElementById('fileImport').click();
+  document.getElementById('fileImport').onchange = (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const data = JSON.parse(reader.result);
+        if(data.stock){ genericStock = data.stock; saveGeneric(); }
+        if(data.companies){ companies = data.companies; saveCompanies(); }
+        if(data.orders){ orders = data.orders; saveOrders(); }
+        if(data.profile){ profile = data.profile; saveProfile(); }
+        route={page:'landing'}; render();
+        showToast('Backup imported successfully.');
+      }catch(err){ showToast('Could not read this file — is it a valid backup?'); }
+    };
+    reader.readAsText(file);
+  };
+}
+
+function exportData(){
+  const payload = { stock: genericStock, companies, orders, profile, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `materia-depot-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ================= Add medicine modal (works for generic + company contexts) ================= */
+function openAddMedicineModal(ctx, r){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Add a medicine</div>
+      <span class="field-label">Medicine name</span>
+      <input class="text-input" id="newMedName" placeholder="${ctx.allowSuggestions ? 'Start typing…' : 'e.g. brand product name'}" autocomplete="off">
+      <div class="suggest-list hidden" id="suggestList"></div>
+      <button class="primary-btn" id="confirmAdd">Add to register</button>
+      <button class="ghost-btn" id="cancelAdd" style="color:var(--ink-soft);">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(bg);
+  const input = document.getElementById('newMedName');
+  const suggestBox = document.getElementById('suggestList');
+  input.focus();
+
+  if(ctx.allowSuggestions){
+    input.addEventListener('input', ()=>{
+      const q = input.value.trim().toLowerCase();
+      if(q.length < 2){ suggestBox.classList.add('hidden'); suggestBox.innerHTML=''; return; }
+      const existingNames = new Set(ctx.list.map(m=>m.name.toLowerCase()));
+      const matches = MASTER_LIST.filter(n=> n.toLowerCase().includes(q) && !existingNames.has(n.toLowerCase())).slice(0,8);
+      if(matches.length===0){ suggestBox.classList.add('hidden'); suggestBox.innerHTML=''; return; }
+      suggestBox.classList.remove('hidden');
+      suggestBox.innerHTML = matches.map(n=>`<div class="suggest-item" data-name="${escapeHtml(n)}">${escapeHtml(n)}</div>`).join('');
+      suggestBox.querySelectorAll('.suggest-item').forEach(item=>{
+        item.onclick = ()=>{ input.value = item.dataset.name; suggestBox.classList.add('hidden'); };
+      });
+    });
+  }
+
+  document.getElementById('cancelAdd').onclick = ()=> document.body.removeChild(bg);
+  bg.onclick = (e)=>{ if(e.target===bg) document.body.removeChild(bg); };
+  document.getElementById('confirmAdd').onclick = ()=>{
+    const name = input.value.trim();
+    if(!name){ input.focus(); return; }
+    const existing = ctx.list.find(m=>m.name.toLowerCase()===name.toLowerCase());
+    document.body.removeChild(bg);
+    if(existing){
+      route={...r, page:'medDetail', medId:existing.id, mode:'edit'}; render();
+      return;
+    }
+    const defaults = ctx.newDefaults();
+    const fresh = { id: cryptoId(), name, dilutions: defaults.dilutions, motherTincture: defaults.motherTincture };
+    ctx.list.push(fresh);
+    ctx.persist();
+    route={...r, page:'medDetail', medId: fresh.id, mode:'edit'}; render();
+  };
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------- PWA install ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{ Promise.resolve().catch(()=>{}); });
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ledger</title>
+<meta name="theme-color" content="#4f46b8">
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>:root{--bg:#eceef7;--cd:#fafaff;--tx:#1b1d3a;--mu:#6e7191;--ac:#4f46b8;--ac2:#6d62e6;--on:#fff;--bd:#dfe1f0;--gn:#168a62;--rd:#c4405f;--sf:#e4e6f5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14.5px/1.45 'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-variant-numeric:tabular-nums}
+#app{max-width:600px;margin:0 auto;padding:16px 16px 110px}
+h2{font-size:22px;margin:2px 0 4px;font-weight:800;letter-spacing:-.02em}
+h3{font-size:13px;margin:18px 0 8px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+small{color:var(--mu);display:block;font-size:12px}
+.g{color:var(--gn)}.r{color:var(--rd)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.top button{width:auto;margin:0;padding:9px 16px;font-size:13px}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(40,40,100,.04)}
+.row{display:flex;align-items:center;gap:12px;padding:11px 12px;background:var(--cd);border:1px solid var(--bd);border-radius:14px;margin-bottom:8px;cursor:pointer}
+.row.st{cursor:default}
+.row .m{flex:1;min-width:0}.row .m b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .e{text-align:right}.row .e b{font-weight:700}
+.av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-weight:700;flex:none}
+.ltr{font-size:12px;font-weight:700;color:var(--ac);margin:14px 0 6px 4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.stat{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:13px 14px}
+.stat .n{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.firm{background:linear-gradient(135deg,var(--ac),var(--ac2));color:var(--on);border-radius:20px;padding:18px;margin-bottom:12px}
+.firm .hd{display:flex;gap:12px;align-items:center}
+.firm img,.hd img{width:50px;height:50px;border-radius:12px;object-fit:contain;background:#fff;padding:3px}
+.firm h2{margin:0;font-size:20px}
+.firm .in{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.25);display:grid;gap:2px;font-size:13px;opacity:.95}
+.firm a{color:inherit;font-weight:600;font-size:12px;opacity:.85;cursor:pointer;display:inline-block;margin-top:8px}
+.hero{background:linear-gradient(135deg,var(--ac),var(--ac2));color:var(--on);border-radius:20px;padding:18px;margin-bottom:12px}
+.hero small{color:inherit;opacity:.8}.hero .n{font-size:34px;font-weight:800;letter-spacing:-.02em}
+input,select,textarea{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:11px;margin-top:4px}
+label{display:block;font-size:12.5px;color:var(--mu);margin-bottom:10px;font-weight:500}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button,.b,.b2{font:inherit;font-weight:600;border:0;border-radius:12px;padding:13px;width:100%;margin-top:8px;background:var(--ac);color:var(--on);cursor:pointer;display:block;text-align:center;text-decoration:none}
+.b2{background:var(--sf);color:var(--tx)}
+button:disabled{opacity:.35}
+.lk{color:var(--ac);font-weight:600;cursor:pointer;display:inline-block;margin:2px 0 10px}
+.dc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.dc button{margin:0;padding:13px 10px}
+.dc button small{color:inherit;opacity:.85;font-weight:500}
+.dc .d{background:var(--rd)}.dc .k{background:var(--gn)}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.tri button{margin:0;padding:11px 4px;font-size:13px}
+.chips{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
+.chips a{flex:1;text-align:center;padding:8px 12px;border-radius:99px;background:var(--sf);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+.chips a.on{background:var(--ac);color:var(--on)}
+.nv{display:grid;grid-template-columns:52px 1fr 52px;gap:8px;align-items:center;text-align:center;margin-bottom:12px}
+.nv button{margin:0;padding:9px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--cd);border-top:1px solid var(--bd);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav a{flex:1;text-align:center;font-size:11px;color:var(--mu);font-weight:600;cursor:pointer;padding:4px 0}
+nav a span{display:block;font-size:19px;line-height:1.2}
+nav a.on{color:var(--ac)}
+.bk{position:fixed;inset:0;background:rgba(20,20,50,.45);z-index:9}
+.sh{position:fixed;left:0;right:0;bottom:0;max-width:600px;margin:auto;background:var(--cd);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));z-index:10;max-height:88%;overflow:auto}
+.sh h3{margin:0 0 12px;color:var(--tx);font-size:16px;text-transform:none;letter-spacing:0}
+/* statement document (also the PDF) */
+.doc{background:#fff;color:#1a1a1a;border:1px solid var(--bd);border-radius:10px;padding:16px;font-size:11.5px;line-height:1.4}
+.doc .s{color:#666;font-size:10.5px}
+.doc .dh{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1.5px solid #1a1a1a}
+.doc .dh img{width:34px;height:34px;object-fit:contain}
+.doc .dh>div:first-child{display:flex;gap:8px;align-items:center}
+.doc .dh b{font-size:13px}
+.doc .rt{text-align:right}
+.doc .pp{display:flex;justify-content:space-between;margin:10px 0}
+.doc .sm{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #ddd;margin-bottom:10px}
+.doc .sm div{padding:6px 8px;border-right:1px solid #ddd}.doc .sm div:last-child{border:0}
+.doc .sm span{display:block;color:#666;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em}
+.doc .sm b{font-size:11.5px}
+.doc table{width:100%;border-collapse:collapse;font-size:10.5px}
+.doc th{text-align:left;font-weight:600;color:#555;border-bottom:1px solid #1a1a1a;padding:4px 3px}
+.doc td{padding:4px 3px;border-bottom:1px solid #e8e8e8}
+.doc .n{text-align:right;white-space:nowrap}
+.doc tfoot td{font-weight:700;border-top:1px solid #1a1a1a;border-bottom:0}
+.doc .ft{margin-top:12px;color:#888;font-size:9.5px;text-align:center}
+.tw{overflow-x:auto}
+@page{margin:14mm}
+@media print{body{background:#fff}body *{visibility:hidden}.pr,.pr *{visibility:visible}.pr{position:absolute;left:0;top:0;width:100%;border:0;border-radius:0;padding:0}nav{display:none}}
+.doc .dr{color:var(--rd)!important}.doc .cr{color:var(--gn)!important}
+.doc td.n.dr,.doc td.n.cr{font-weight:600}
+.doc .sm b{font-size:17px}.doc .sm b.cl{font-size:19px;font-weight:800}
+.doc tfoot td{font-size:15px;font-weight:800;border-top:2px solid #1a1a1a}
+.doc thead th{background:#f1f1f1}
+.doc .cb{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:12px 14px;border:2px solid currentColor;border-radius:10px;font-size:12px}.doc .cb span{text-transform:uppercase;letter-spacing:.05em;font-size:10px;color:#555}.doc .cb b{font-size:26px;font-weight:800;color:inherit}
+.doc,.doc *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="sh"></div>
+<nav>
+  <a data-v="home" onclick="go('home')"><span>⌂</span>Home</a>
+  <a data-v="parties" onclick="go('parties')"><span>◉</span>Parties</a>
+  <a data-v="hist" onclick="go('hist')"><span>⇄</span>History</a>
+  <a data-v="rep" onclick="go('rep')"><span>▤</span>Reports</a>
+  <a data-v="set" onclick="go('set')"><span>⚙</span>Settings</a>
+</nav>
+<script>/* Ledger – offline; all data stays in this browser (localStorage) */
+const $=s=>document.querySelector(s);
+const KEY='ledger2';
+const DEF=()=>({co:{name:'My Firm',addr:'',phone:'',email:'',reg:'',cur:'₹',logo:''},parties:[],ent:[]});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=S||DEF();S.co={...DEF().co,...S.co};
+let view='home',arg=null,RP={t:'all',o:0},RA={t:'month',o:0},HF={p:'',t:''},flds=[],sheetOk;
+const V={};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const M=n=>(n<-.004?'−':'')+S.co.cur+Math.abs(+n||0).toLocaleString(undefined,{maximumFractionDigits:2});
+const iso=d=>d.toLocaleDateString('en-CA'),today=()=>iso(new Date());
+const fd=d=>!d?'':new Date(d+'T12:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+const uid=()=>Math.random().toString(36).slice(2,9);
+const sum=a=>Math.round(a.reduce((x,y)=>x+y,0)*100)/100;
+const P=id=>S.parties.find(p=>p.id==id)||{name:'(deleted)',open:0};
+const sorted=()=>[...S.parties].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}));
+const sg=e=>e.type=='dr'?e.amt:-e.amt;
+const bal=id=>(+P(id).open||0)+sum(S.ent.filter(e=>e.pid==id).map(sg));
+const owe=b=>b>.004?'They owe you':b<-.004?'You owe them':'Settled';
+const empty=t=>`<div class="c" style="text-align:center;color:var(--mu)">${t}</div>`;
+const det=e=>[e.mode,e.ref,e.note].filter(Boolean).map(E).join(' · ');
+const av=n=>{const h=[...n].reduce((a,c)=>a+c.charCodeAt(0),0)*7%360;return `<i class="av" style="background:hsl(${h} 70% 91%);color:hsl(${h} 50% 32%)">${E(n.trim()[0]||'?').toUpperCase()}</i>`};
+const tab=()=>({home:'home',parties:'parties',party:'parties',hist:'hist',rep:'rep',rp:'rep',ra:'rep',set:'set'})[view];
+
+/* ---- navigation & sheets ---- */
+function go(v,a){if(v=='rp')RP.back=view=='party';view=v;arg=a;cl();render();scrollTo(0,0)}
+function render(){$('#app').innerHTML=V[view](arg);document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v==tab()))}
+const cl=()=>{$('#sh').innerHTML=''};
+const raw=h=>{$('#sh').innerHTML=`<div class="bk" onclick="cl()"></div><div class="sh">${h}</div>`};
+function sheet(title,fields,ok,extra){flds=fields;sheetOk=ok;raw(`<h3>${title}</h3>`+fields.map(f=>`<label>${f.l}${f.o?`<select id="f_${f.k}">${f.o.map(o=>`<option value="${o[0]}" ${o[0]==f.v?'selected':''}>${E(o[1])}</option>`).join('')}</select>`:`<input id="f_${f.k}" type="${f.t||'text'}" value="${E(f.v)}" ${f.t=='number'?'step="any" inputmode="decimal"':''}>`}</label>`).join('')+`<small id="er" class="r"></small><button onclick="subm()">Save</button>${extra||''}`)}
+function subm(){const v={};flds.forEach(f=>v[f.k]=$('#f_'+f.k).value);const k=sheetOk(v);if(k===false||typeof k=='string'){$('#er').textContent=k||'Please fill the required fields.';return}cl();render()}
+function sure(el,fn){if(el.dataset.s)fn();else{el.dataset.s=1;el.textContent='Tap again to confirm'}}
+
+/* ---- shared row renderers ---- */
+function plist(q,to){q=(q||'').toLowerCase();let L='';
+return sorted().filter(p=>p.name.toLowerCase().includes(q)).map(p=>{const c=p.name.trim()[0].toUpperCase(),h=c!=L?`<div class="ltr">${E(c)}</div>`:'';L=c;const b=bal(p.id);
+return h+`<div class="row" onclick="go('${to}','${p.id}')">${av(p.name)}<div class="m"><b>${E(p.name)}</b><small>${E(p.phone||owe(b))}</small></div><div class="e"><b>${b?M(Math.abs(b)):'–'}</b><small>${b?owe(b):''}</small></div></div>`}).join('')||empty('No parties yet.')}
+const erow=(e,withP)=>`<div class="row" onclick="entForm('${e.pid}','${e.type}','${e.id}')">${withP?av(P(e.pid).name):''}<div class="m"><b>${withP?E(P(e.pid).name):(e.type=='dr'?'Debit':'Credit')}</b><small>${withP?(e.type=='dr'?'Debit':'Credit')+' · ':''}${fd(e.d)}${det(e)?' · '+det(e):''}</small></div><div class="e"><b class="${e.type=='dr'?'r':'g'}">${M(e.amt)}</b>${e.b!=null?`<small>Bal ${M(e.b)}</small>`:''}</div></div>`;
+
+/* ---- home: firm info + overview ---- */
+V.home=()=>{const c=S.co,m=today().slice(0,7),bs=S.parties.map(p=>bal(p.id)),mo=t=>sum(S.ent.filter(e=>e.type==t&&e.d.startsWith(m)).map(e=>e.amt));
+const lines=[c.addr,c.phone,c.email,c.reg&&'Reg. no. '+c.reg].filter(Boolean);
+return `<div class="firm"><div class="hd">${c.logo?`<img src="${c.logo}">`:''}<div><h2>${E(c.name)}</h2><small style="color:inherit;opacity:.8">Ledger · ${S.parties.length} part${S.parties.length==1?'y':'ies'}</small></div></div>
+${lines.length?`<div class="in">${lines.map(E).map(l=>`<span>${l}</span>`).join('')}</div>`:''}<a onclick="go('set')">${lines.length?'Edit firm details':'Add your firm details ›'}</a></div>
+<div class="g2"><div class="stat"><small>You will get</small><div class="n g">${M(sum(bs.filter(b=>b>0)))}</div></div><div class="stat"><small>You will give</small><div class="n r">${M(-sum(bs.filter(b=>b<0)))}</div></div>
+<div class="stat"><small>Debit this month</small><div class="n">${M(mo('dr'))}</div></div><div class="stat"><small>Credit this month</small><div class="n">${M(mo('cr'))}</div></div></div>
+<div class="tri"><button onclick="entForm('','dr')">+ Debit</button><button class="b2" onclick="entForm('','cr')">+ Credit</button><button class="b2" onclick="partyForm()">+ Party</button></div>
+${S.parties.length?'':empty('No parties yet.<br><a class="lk" onclick="partyForm()">Add your first party</a> · <a class="lk" onclick="demo()">Load sample data</a>')}`};
+
+/* ---- parties page ---- */
+V.parties=()=>`<div class="top"><div><h2>Parties</h2><small>${S.parties.length} in total · A–Z</small></div><button onclick="partyForm()">+ Add party</button></div>
+<input placeholder="Search parties" oninput="$('#pl').innerHTML=plist(this.value,'party')"><div id="pl">${plist('','party')}</div>`;
+function partyForm(id){const p=S.parties.find(x=>x.id==id)||{},o=+p.open||0;
+sheet(id?'Edit party':'New party',[{k:'name',l:'Name',v:p.name},{k:'phone',l:'Phone with country code (optional)',v:p.phone,t:'tel'},{k:'addr',l:'Address (optional)',v:p.addr},{k:'open',l:'Opening balance (optional)',v:o?Math.abs(o):'',t:'number'},{k:'dir',l:'Opening balance means',v:o<0?'-':'+',o:[['+','They owe me'],['-','I owe them']]}],
+v=>{if(!v.name.trim())return 'Enter a name.';if(S.parties.some(x=>x.id!=id&&x.name.trim().toLowerCase()==v.name.trim().toLowerCase()))return 'A party with this name already exists.';const open=(+v.open||0)*(v.dir=='-'?-1:1),d={name:v.name.trim(),phone:v.phone,addr:v.addr,open};if(id)Object.assign(p,d);else S.parties.push({id:uid(),...d});save()},
+id?`<button class="b2" onclick="sure(this,()=>{S.parties=S.parties.filter(x=>x.id!='${id}');S.ent=S.ent.filter(e=>e.pid!='${id}');save();go('parties')})">Remove party and its history</button>`:'')}
+
+/* ---- ledger rows ---- */
+function rows(pid,a,z){const p=P(pid),all=S.ent.filter(e=>e.pid==pid).sort((x,y)=>(x.d+x.t).localeCompare(y.d+y.t));let b=+p.open||0;
+if(a)all.filter(e=>e.d<a).forEach(e=>b+=sg(e));
+const before=b,list=all.filter(e=>(!a||e.d>=a)&&(!z||e.d<=z)).map(e=>{b+=sg(e);return{...e,b}});
+return{before,list,dr:sum(list.filter(e=>e.type=='dr').map(e=>e.amt)),cr:sum(list.filter(e=>e.type=='cr').map(e=>e.amt)),close:b}}
+
+/* ---- party detail ---- */
+V.party=id=>{const p=P(id),b=bal(id),r=rows(id,'');
+return `<a class="lk" onclick="go('parties')">‹ Parties</a>
+<div class="hero"><small>${E(p.name)}${p.phone?' · '+E(p.phone):''}</small><div class="n">${M(Math.abs(b))}</div><small>${owe(b)}</small></div>
+<div class="dc"><button class="d" onclick="entForm('${id}','dr')">Debit<small>You gave · they owe more</small></button><button class="k" onclick="entForm('${id}','cr')">Credit<small>You got · they owe less</small></button></div>
+<div class="tri"><button class="b2" onclick="RP={t:'all',o:0};go('rp','${id}')">Ledger PDF</button><button class="b2" onclick="partyForm('${id}')">Edit</button><button class="b2" ${b>.004?'':'disabled'} onclick="remind('${id}')">Remind</button></div>
+<div class="g2"><div class="stat"><small>Total debit</small><div class="n r">${M(r.dr)}</div></div><div class="stat"><small>Total credit</small><div class="n g">${M(r.cr)}</div></div></div>
+<h3>Payment history</h3>${r.list.slice().reverse().map(e=>erow(e)).join('')||empty('No entries yet.')}
+${+p.open?`<div class="row st"><div class="m"><b>Opening balance</b><small>${+p.open>0?'They owed you':'You owed them'}</small></div><div class="e"><b>${M(Math.abs(p.open))}</b></div></div>`:''}`};
+function entForm(pid,type,id){const e=S.ent.find(x=>x.id==id)||{};type=e.type||type||'dr';const g=!pid&&!id;
+if(g&&!S.parties.length)return partyForm();
+sheet(g?'New entry':type=='dr'?'Debit · you gave':'Credit · you got',[...(g?[{k:'pid',l:'Party',v:'',o:[['','Choose party…'],...sorted().map(p=>[p.id,p.name])]}]:[]),{k:'amt',l:'Amount',t:'number',v:e.amt||''},{k:'d',l:'Date',t:'date',v:e.d||today()},{k:'mode',l:'Mode',v:e.mode||'Cash',o:['Cash','UPI','Bank transfer','Cheque','Other'].map(x=>[x,x])},{k:'ref',l:'Bill / reference no. (optional)',v:e.ref},{k:'note',l:'Note (optional)',v:e.note}],
+v=>{if(g&&!v.pid)return 'Choose a party.';if(!(+v.amt>0))return 'Enter an amount above 0.';if(!v.d)return 'Choose a date.';const o={type,amt:+v.amt,d:v.d,mode:v.mode,ref:v.ref,note:v.note};if(id)Object.assign(e,o);else S.ent.push({id:uid(),t:Date.now(),pid:g?v.pid:pid,...o});save()},
+id?`<button class="b2" onclick="sure(this,()=>{S.ent=S.ent.filter(x=>x.id!='${id}');save();cl();render()})">Delete entry</button>`:(g?`<small style="margin-top:8px">Debit = you gave. Credit = you got. Use the Debit / Credit buttons on a party to pick the type.</small>`:''))}
+function remind(pid){const p=P(pid),t=`Hello ${p.name}, a gentle reminder from ${S.co.name}: ${M(bal(pid))} is pending. Kindly arrange the payment. Thank you.`;
+raw(`<h3>Payment reminder</h3><textarea id="mt" rows="5">${E(t)}</textarea><a class="b" target="_blank" rel="noopener" onclick="this.href='https://wa.me/${(p.phone||'').replace(/\D/g,'')}?text='+encodeURIComponent($('#mt').value)">Send on WhatsApp</a><a class="b2" onclick="this.href='sms:${E(p.phone||'')}?body='+encodeURIComponent($('#mt').value)">Send as SMS</a><button class="b2" onclick="try{navigator.clipboard.writeText($('#mt').value);this.textContent='Copied'}catch(e){$('#mt').select()}">Copy text</button>`)}
+
+/* ---- payment history (all parties, filterable) ---- */
+V.hist=()=>{const l=S.ent.filter(e=>(!HF.p||e.pid==HF.p)&&(!HF.t||e.type==HF.t)).sort((a,b)=>(b.d+b.t).localeCompare(a.d+a.t));let mk='';
+return `<div class="top"><div><h2>Payment history</h2><small>${l.length} entr${l.length==1?'y':'ies'}</small></div><button onclick="entForm('','dr')">+ Entry</button></div>
+<select onchange="HF.p=this.value;render()"><option value="">All parties</option>${sorted().map(p=>`<option value="${p.id}" ${HF.p==p.id?'selected':''}>${E(p.name)}</option>`).join('')}</select>
+<div class="chips" style="margin-top:10px">${[['','All'],['dr','Debit'],['cr','Credit']].map(x=>`<a class="${HF.t==x[0]?'on':''}" onclick="HF.t='${x[0]}';render()">${x[1]}</a>`).join('')}</div>
+<div class="g2"><div class="stat"><small>Debit</small><div class="n r">${M(sum(l.filter(e=>e.type=='dr').map(e=>e.amt)))}</div></div><div class="stat"><small>Credit</small><div class="n g">${M(sum(l.filter(e=>e.type=='cr').map(e=>e.amt)))}</div></div></div>`
++(l.map(e=>{const k=e.d.slice(0,7),h=k!=mk?`<div class="ltr">${new Date(k+'-15').toLocaleDateString(undefined,{month:'long',year:'numeric'})}</div>`:'';mk=k;return h+erow(e,1)}).join('')||empty('No entries match.'))};
+
+/* ---- reports: choose party, then All / Weekly / Monthly / Yearly ---- */
+V.rep=()=>`<h2>Reports</h2><h3>All transactions</h3><div class="tri">${[['week','Weekly'],['month','Monthly'],['year','Yearly']].map(x=>`<button class="b2" onclick="RA={t:'${x[0]}',o:0};go('ra')">${x[1]}</button>`).join('')}</div><small>Every debit and credit across all parties.</small><h3>By party</h3><input placeholder="Search parties" oninput="$('#pl').innerHTML=plist(this.value,'rp')"><div id="pl">${plist('','rp')}</div>`;
+function rng(t,o){const n=new Date();n.setHours(12);let a,b,l;
+if(t=='all')return['','','Full ledger'];
+if(t=='week'){a=new Date(n);a.setDate(a.getDate()-((a.getDay()+6)%7)+o*7);b=new Date(a);b.setDate(b.getDate()+6);l=fd(iso(a))+' – '+fd(iso(b))}
+else if(t=='month'){a=new Date(n.getFullYear(),n.getMonth()+o,1,12);b=new Date(a.getFullYear(),a.getMonth()+1,0,12);l=a.toLocaleDateString(undefined,{month:'long',year:'numeric'})}
+else{const y=n.getFullYear()+o;a=new Date(y,0,1,12);b=new Date(y,11,31,12);l=String(y)}
+return[iso(a),iso(b),l]}
+const head=(t,l)=>{const c=S.co,cn=[c.phone,c.email,c.reg&&'Reg. '+c.reg].filter(Boolean).map(E).join(' · ');return `<div class="dh"><div>${c.logo?`<img src="${c.logo}">`:''}<div><b>${E(c.name)}</b>${c.addr?`<div class="s">${E(c.addr)}</div>`:''}${cn?`<div class="s">${cn}</div>`:''}</div></div><div class="rt"><b>${t}</b><div class="s">${l}</div><div class="s">Generated ${fd(today())}</div></div></div>`};
+const ctl=(n,st,l,all)=>`<div class="chips">${(all?[['all','Full']]:[]).concat([['week','Weekly'],['month','Monthly'],['year','Yearly']]).map(x=>`<a class="${st.t==x[0]?'on':''}" onclick="${n}.t='${x[0]}';${n}.o=0;render()">${x[1]}</a>`).join('')}</div>${st.t=='all'?'':`<div class="nv"><button class="b2" onclick="${n}.o--;render()">‹</button><b>${l}</b><button class="b2" ${st.o>=0?'disabled':''} onclick="${n}.o++;render()">›</button></div>`}`;
+const pdfBtn=`<button onclick="print()">Download PDF</button><small style="margin-top:8px;text-align:center">Choose “Save as PDF” in the print dialog.</small>`;
+function doc(id,l,r){const p=P(id);
+return `<div class="doc pr">${head('Ledger statement',l)}<div class="pp"><div><div class="s">Party</div><b>${E(p.name)}</b>${p.phone?`<div class="s">${E(p.phone)}</div>`:''}${p.addr?`<div class="s">${E(p.addr)}</div>`:''}</div></div>
+<div class="sm"><div><span>Brought fwd</span><b>${M(r.before)}</b></div><div><span>Debit</span><b class="dr">${M(r.dr)}</b></div><div><span>Credit</span><b class="cr">${M(r.cr)}</b></div><div><span>Closing</span><b class="cl">${M(r.close)}</b></div></div>
+${r.list.length?`<div class="tw"><table><thead><tr><th>Date</th><th>Details</th><th class="n">Debit</th><th class="n">Credit</th><th class="n">Balance</th></tr></thead><tbody>${r.list.map(e=>`<tr><td>${fd(e.d)}</td><td>${det(e)||(e.type=='dr'?'Debit':'Credit')}</td><td class="n dr">${e.type=='dr'?M(e.amt):''}</td><td class="n cr">${e.type=='cr'?M(e.amt):''}</td><td class="n">${M(e.b)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="2">Total</td><td class="n dr">${M(r.dr)}</td><td class="n cr">${M(r.cr)}</td><td class="n">${M(r.close)}</td></tr></tfoot></table></div>`:'<div class="s">No entries in this period.</div>'}
+<div class="cb ${r.close>0?'dr':r.close<0?'cr':''}"><div><span>Closing balance</span><div>${owe(r.close)}</div></div><b>${M(Math.abs(r.close))}</b></div><div class="ft">Computer-generated statement</div></div>`}
+function docAll(l,L){const dr=sum(L.filter(e=>e.type=='dr').map(e=>e.amt)),cr=sum(L.filter(e=>e.type=='cr').map(e=>e.amt));
+return `<div class="doc pr">${head('Transaction statement',l)}<div class="sm" style="margin-top:10px"><div><span>Entries</span><b>${L.length}</b></div><div><span>Debit</span><b class="dr">${M(dr)}</b></div><div><span>Credit</span><b class="cr">${M(cr)}</b></div><div><span>Net (Dr − Cr)</span><b class="cl">${M(dr-cr)}</b></div></div>
+${L.length?`<div class="tw"><table><thead><tr><th>Date</th><th>Party</th><th>Details</th><th class="n">Debit</th><th class="n">Credit</th></tr></thead><tbody>${L.map(e=>`<tr><td>${fd(e.d)}</td><td>${E(P(e.pid).name)}</td><td>${det(e)||(e.type=='dr'?'Debit':'Credit')}</td><td class="n dr">${e.type=='dr'?M(e.amt):''}</td><td class="n cr">${e.type=='cr'?M(e.amt):''}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3">Total</td><td class="n dr">${M(dr)}</td><td class="n cr">${M(cr)}</td></tr></tfoot></table></div>`:'<div class="s">No transactions in this period.</div>'}
+<div class="ft">Computer-generated statement</div></div>`}
+V.ra=()=>{const[a,z,l]=rng(RA.t,RA.o),L=S.ent.filter(e=>e.d>=a&&e.d<=z).sort((x,y)=>(x.d+x.t).localeCompare(y.d+y.t));
+return `<a class="lk" onclick="go('rep')">‹ Reports</a><h2>All transactions</h2>${ctl('RA',RA,l)}${docAll(l,L)}${pdfBtn}`};
+V.rp=id=>{const p=P(id),[a,z,l]=rng(RP.t,RP.o),r=rows(id,a,z);
+return `<a class="lk" onclick="${RP.back?`go('party','${id}')`:`go('rep')`}">‹ Back</a><h2>${E(p.name)}</h2>${ctl('RP',RP,l,1)}${doc(id,l,r)}${pdfBtn}`};
+
+/* ---- settings: firm details + backup ---- */
+const fld=(k,l)=>`<label>${l}<input value="${E(S.co[k])}" onchange="S.co.${k}=this.value;save()"></label>`;
+V.set=()=>`<h2 style="margin-bottom:12px">Settings</h2><div class="c"><h3 style="margin-top:0">Firm details</h3>${fld('name','Firm name')}${fld('addr','Address')}<div class="r2">${fld('phone','Phone')}${fld('email','Email')}</div><div class="r2">${fld('reg','Tax / registration no.')}${fld('cur','Currency symbol')}</div><label style="margin-bottom:4px">Logo</label><div style="display:flex;gap:10px;align-items:center">${S.co.logo?`<img src="${S.co.logo}" height="48" style="border-radius:10px">`:''}<label class="b2" style="flex:1;margin:0;position:relative;cursor:pointer">Choose image<input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer" onchange="logo(this)"></label></div><small id="lm" class="r" style="margin:6px 0"></small><div class="r2"><button class="b2" style="margin:0" onclick="mono()">Use initials as logo</button>${S.co.logo?`<button class="b2" style="margin:0" onclick="S.co.logo='';save();render()">Remove logo</button>`:''}</div><button class="b2" onclick="go('home')">Done · view front page</button></div>
+<div class="c"><h3 style="margin-top:0">Backup</h3><button class="b2" style="margin-top:0" onclick="raw('<h3>Backup</h3><small>Copy this text and keep it safe.</small><textarea rows=8 onclick=this.select()>'+E(JSON.stringify(S))+'</textarea>')">Show backup text</button><button class="b2" onclick="raw('<h3>Restore</h3><textarea id=rs rows=8 placeholder=Paste backup text></textarea><button onclick=restore()>Restore</button>')">Restore from backup</button><button class="b2" onclick="demo()">Load sample data</button><button class="b2" onclick="sure(this,()=>{S=DEF();save();go('home')})">Erase everything</button></div>`;
+function restore(){try{const d=JSON.parse($('#rs').value);if(!d.co||!Array.isArray(d.parties)||!Array.isArray(d.ent))throw 0;S=d;S.co={...DEF().co,...S.co};save();go('home')}catch(e){$('#rs').value='That text is not a valid backup.'}}
+function logo(inp){const f=inp.files&&inp.files[0],m=$('#lm');if(!f)return;m.textContent='Reading image…';const u=URL.createObjectURL(f),im=new Image();
+im.onload=()=>{try{const w=im.naturalWidth||200,h=im.naturalHeight||200,k=Math.min(1,256/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.co.logo=c.toDataURL('image/png');save();URL.revokeObjectURL(u);render()}catch(e){m.textContent='Could not use this image. Try a PNG or JPG.'}};
+im.onerror=()=>{m.textContent='This image format isn’t supported. Try a PNG or JPG.'};im.src=u;inp.value=''}
+function mono(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),g=x.createLinearGradient(0,0,128,128);g.addColorStop(0,'#4f46b8');g.addColorStop(1,'#6d62e6');x.fillStyle=g;x.beginPath();x.roundRect?x.roundRect(0,0,128,128,28):x.rect(0,0,128,128);x.fill();x.fillStyle='#fff';x.font='700 56px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText((S.co.name.split(/\s+/).filter(w=>/[a-z0-9]/i.test(w[0])).map(w=>w[0]).join('').slice(0,2)||'L').toUpperCase(),64,68);S.co.logo=c.toDataURL('image/png');save();render()}
+function demo(){const f=n=>iso(new Date(Date.now()-n*864e5)),a=uid(),b=uid(),c=uid();
+if(S.co.name=='My Firm')Object.assign(S.co,{name:'Sharma & Co.',addr:'12 Market Road, Pune 411001',phone:'+91 98000 00000',email:'accounts@sharma.example',reg:'27ABCDE1234F1Z5'});
+S.parties.push({id:a,name:'Ravi Kumar',phone:'919800000001',addr:'Pune',open:0},{id:b,name:'Meera Textiles',phone:'',addr:'Surat',open:5000},{id:c,name:'Alpha Supplies',phone:'',addr:'Delhi',open:0});
+[[a,'dr',12000,3,'Cash','B-101'],[a,'cr',4000,2,'UPI',''],[a,'dr',2500,1,'Cash',''],[b,'cr',3000,9,'Bank transfer',''],[b,'dr',8000,20,'Cash','B-088'],[c,'cr',2500,40,'Cheque','Freight']].forEach((x,i)=>S.ent.push({id:uid(),t:Date.now()+i,pid:x[0],type:x[1],amt:x[2],d:f(x[3]),mode:x[4],ref:x[5],note:''}));
+save();go('home')}
+render();
+</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>Promise.resolve().catch(()=>{}));</script>
+</body>
+</html>
